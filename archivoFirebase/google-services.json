@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "499016573405",
+    "firebase_url": "https://nutrialert-86907.firebaseio.com",
+    "project_id": "nutrialert-86907",
+    "storage_bucket": "nutrialert-86907.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:499016573405:android:a68e7095ce01d049339634",
+        "android_client_info": {
+          "package_name": "com.nutrialert.nutrialert_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "499016573405-asgo9t9nolv17n022b6eojima78g6oeh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASjKtAJO8mWTaCfYX2YsGsXla2ZrZqCLs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "499016573405-asgo9t9nolv17n022b6eojima78g6oeh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
