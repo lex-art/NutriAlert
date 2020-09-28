@@ -14,4 +14,5 @@ class ChildService {
   Stream<QuerySnapshot> getChildStream() {
     return _fireStore.collection("niños").snapshots();
   }
+  //metodo para obtener el historial del niño
 }

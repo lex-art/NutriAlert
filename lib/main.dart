@@ -51,7 +51,7 @@ Future<void> main() async {
       RecordChild.routName: (BuildContext context) => RecordChild(),
 //----------------------------- Páginas Secundarias ------------------------------
       ResultTest.routName: (BuildContext context) => ResultTest(),
-      StoryChild.routName: (BuildContext context) => StoryChild(),
+      //StoryChild.routName: (BuildContext context) => StoryChild(Str),
 //----------------------------- Páginas Ocpiones ------------------------------
       EditProfile.routName: (BuildContext context) => EditProfile(),
       User.routName: (BuildContext context) => User(),

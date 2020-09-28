@@ -1,3 +1,4 @@
+import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
 import 'package:flutter/material.dart';
 
@@ -31,10 +32,9 @@ class _RecordChildState extends State<RecordChild> {
                         children: _getChildItem(snapshot.data.documents),
                       ));
                     } else {
-                      return Center(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Center(child: CircularProgressIndicator())],
                       );
                     }
                   })
@@ -60,7 +60,7 @@ class _RecordChildState extends State<RecordChild> {
 }
 
 class ChildItem extends StatelessWidget {
-  final String nombres, edad,apellidos, estado, id;
+  final String nombres, edad, apellidos, estado, id;
   ChildItem({
     this.id,
     this.nombres,
@@ -73,7 +73,7 @@ class ChildItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 10, right: 8),
       child: Column(
-        children: [         
+        children: [
           ListTile(
             leading: CircleAvatar(
               child: Text(nombres[0].toUpperCase()),
@@ -108,10 +108,15 @@ class ChildItem extends StatelessWidget {
               ),
             ),
             //cuando le da click lo lleva a otra pag
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute<Null>(builder: (BuildContext context) {
+                return StoryChild(id);
+              }));
+            },
           ),
-           Divider(
-            height: 1.0,            
+          Divider(
+            height: 1.0,
             //thickness: 1,
             color: Colors.blueAccent,
           ),
