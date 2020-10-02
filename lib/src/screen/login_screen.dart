@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
 
     //todos los datos de la coleccion
     final usuarios = await UserService().getUser();
-    for (var usuario in usuarios.documents) {
+    for (var usuario in usuarios.docs) {
       //print("-----------------------------------------${usuario.get("rol")}");
       //verificamos que sea el mismo usuario
       if (usuario.id == idUser) {

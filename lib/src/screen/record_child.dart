@@ -110,9 +110,7 @@ class ChildItem extends StatelessWidget {
             //cuando le da click lo lleva a otra pag
             onTap: () {
               Navigator.of(context).push(
-                  MaterialPageRoute<Null>(builder: (BuildContext context) {
-                return StoryChild(id);
-              }));
+                  MaterialPageRoute<Null>(builder: (BuildContext context)  => StoryChild(id)));
             },
           ),
           Divider(

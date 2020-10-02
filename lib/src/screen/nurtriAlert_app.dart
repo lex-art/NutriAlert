@@ -92,8 +92,11 @@ class _NutriAlertState extends State<NutriAlert> {
           ),
           //pone de color blanco a todos los iconos del appBar
           iconTheme: IconThemeData(color: Colors.white),
+          //Quita el boton de retroceso en la app
+          automaticallyImplyLeading: false,
         ),
         endDrawer: getDrawer(context),
+        
         body: SingleChildScrollView(
           child: Container(
             child: Column(
@@ -171,7 +174,7 @@ class _NutriAlertState extends State<NutriAlert> {
       ),
       text: "Registrar",
       onPressed: () {
-        Navigator.pushNamed(context, '/registration');
+        Navigator.pushNamed(context, '/register');
       },
     );
   }

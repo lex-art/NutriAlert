@@ -18,23 +18,25 @@ class AppTextField extends StatelessWidget {
   final TextInputType textInputType;
   //para hacer uso de los mixins tambien tenemos que definirlos aqui
   final FormFieldValidator<String> validator;
+  //valores calor inicioal en el textField
 
   //para que cuando haya un error y despues se corrija este desaparezca el error
   final bool autoValidate;
 
   // constructor
-  const AppTextField(
-      {this.inputText,
-      this.onSaved,
-      this.autoValidate,
-      this.controller,
-      this.focusNode,
-      this.obscureText,
-      this.validator,
-      this.textInputType});
+  const AppTextField({
+    this.inputText,
+    this.onSaved,
+    this.autoValidate,
+    this.controller,
+    this.focusNode,
+    this.obscureText,
+    this.validator,
+    this.textInputType,
+  });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
     return TextFormField(
       //para la autovalidacion de los textfield
       autovalidate: autoValidate,

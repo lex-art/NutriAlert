@@ -12,6 +12,22 @@ class TestNutritional extends StatefulWidget {
 }
 
 class _TestNutritionalState extends State<TestNutritional> {
+  bool showSpinner = false;
+  FocusNode _focusNode;
+  //un global key permite referenciar a un formulario y desde él tener accesos al estado de un textFormfield
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  //tipo de teclado
+  TextInputType textInputType;
+  //seteamos el autovalidate
+  bool _autovalidate = false;
+  String _errorMessage = "";
+
+  TextEditingController _nombreController = TextEditingController();
+  TextEditingController _edadController = TextEditingController();
+  TextEditingController _pesoController = TextEditingController();
+  TextEditingController _alturaController = TextEditingController();
+  TextEditingController _fechaController = TextEditingController();
+
   //obtenemos la fecha del sistema
   var now = DateTime.now().toUtc().toLocal();
   //variable para el switch encendido del bluetooth
@@ -19,6 +35,33 @@ class _TestNutritionalState extends State<TestNutritional> {
   //datos para la lista desplegable ** modificar depues
   var _list = ["Masculino", "Femenino"];
   String _selection = "Seleccione una opción";
+  @override
+  void initState() {
+    super.initState();
+    _nombreController = TextEditingController();
+    _edadController = TextEditingController();
+    _pesoController = TextEditingController();
+    _alturaController = TextEditingController();
+    _fechaController = TextEditingController(text:  formatDate(now, [d, '-', M, '-', yyyy]));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _nombreController.dispose();
+    _edadController.dispose();
+    _pesoController.dispose();
+    _alturaController.dispose();
+    _fechaController.dispose();
+  }
+
+  //metodo para la barra de progreso
+  void setSpinnerStatus(bool status) {
+    //re-renderizar la app para que muestre el progres bar
+    setState(() {
+      showSpinner = status;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +126,6 @@ class _TestNutritionalState extends State<TestNutritional> {
                               });
                             },
                             hint: Text(_selection),
-                            
                           ),
                         ],
                       ),
@@ -112,20 +154,23 @@ class _TestNutritionalState extends State<TestNutritional> {
                                 right: 20,
                                 left: 20,
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  _nombre(),
-                                  SizedBox(height: 10.0),
-                                  _edad(),
-                                  SizedBox(height: 10.0),
-                                  _pesoTexField(),
-                                  SizedBox(height: 10.0),
-                                  _alturaTextField(),
-                                  SizedBox(height: 10.0),
-                                  _fecha(),
-                                  _evalar(),
-                                ],
+                              child: Form(
+                                key: _formkey,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    _nombre(),
+                                    SizedBox(height: 10.0),
+                                    _edad(),
+                                    SizedBox(height: 10.0),
+                                    _pesoTexField(),
+                                    SizedBox(height: 10.0),
+                                    _alturaTextField(),
+                                    SizedBox(height: 10.0),
+                                    _fecha(),
+                                    _evalar(),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -220,12 +265,16 @@ class _TestNutritionalState extends State<TestNutritional> {
 //----------------------------- TextFiel para los datos del niño ---------------------
   Widget _nombre() {
     return AppTextField(
+      controller: _nombreController,
+      autoValidate: _autovalidate,
       inputText: "Nombre del niñ@",
     );
   }
 
   Widget _edad() {
     return AppTextField(
+      controller: _edadController,
+      autoValidate: _autovalidate,
       inputText: "Edad en meses",
       textInputType: TextInputType.number,
     );
@@ -233,6 +282,8 @@ class _TestNutritionalState extends State<TestNutritional> {
 
   Widget _pesoTexField() {
     return AppTextField(
+      controller: _pesoController,
+      autoValidate: _autovalidate,
       inputText: "Peso(Kg)",
       textInputType: TextInputType.number,
     );
@@ -240,6 +291,8 @@ class _TestNutritionalState extends State<TestNutritional> {
 
   Widget _alturaTextField() {
     return AppTextField(
+      controller: _alturaController,
+      autoValidate: _autovalidate,
       inputText: "Longitud/Talla(Cm)",
       textInputType: TextInputType.number,
     );
@@ -247,7 +300,9 @@ class _TestNutritionalState extends State<TestNutritional> {
 
   Widget _fecha() {
     return AppTextField(
-      inputText: formatDate(now, [d, '-', M, '-', yyyy]),
+      controller: _fechaController,
+      autoValidate: _autovalidate,
+      inputText: "Ingrese fecha",
       textInputType: TextInputType.datetime,
     );
   }

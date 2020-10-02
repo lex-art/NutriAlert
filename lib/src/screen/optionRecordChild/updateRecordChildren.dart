@@ -1,4 +1,5 @@
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
+import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
 import 'package:NutriAlert/src/widgets/app_error_message.dart';
 import 'package:flutter/material.dart';
@@ -6,14 +7,47 @@ import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
 
-class RegisterChildren extends StatefulWidget {
-  //nombre de la ruta
-  static const String routName = "/register";
+// ignore: must_be_immutable
+class UpdateRegisterChildren extends StatefulWidget {
+  final String id,
+      nombre,
+      apellido,
+      cui,
+      direccion,
+      edadMeses,
+      estado,
+      fechaRegistro,
+      genero,
+      madre,
+      nacimiento,
+      noCasa,
+      noCel,
+      noSector,
+      padre,
+      pueblo;
+  UpdateRegisterChildren(
+      {this.id,
+      this.nombre,
+      this.apellido,
+      this.cui,
+      this.direccion,
+      this.edadMeses,
+      this.estado,
+      this.fechaRegistro,
+      this.genero,
+      this.madre,
+      this.nacimiento,
+      this.noCasa,
+      this.noCel,
+      this.noSector,
+      this.padre,
+      this.pueblo});
+
   @override
-  _RegisterChildrenState createState() => _RegisterChildrenState();
+  _UpdateRegisterChildrenState createState() => _UpdateRegisterChildrenState();
 }
 
-class _RegisterChildrenState extends State<RegisterChildren>
+class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
     with ValidationChildMixins {
   //obtenemos la fecha del sistema
   var now = DateTime.now().toUtc().toLocal();
@@ -44,18 +78,19 @@ class _RegisterChildrenState extends State<RegisterChildren>
   @override
   void initState() {
     super.initState();
+    print(widget.genero);
     _focusNode = FocusNode();
-
-    _cuiController = TextEditingController();
-    _nameController = TextEditingController();
-    _secondController = TextEditingController();
-    _ageController = TextEditingController();
-    _birthController = TextEditingController();
-    _nameMotherController = TextEditingController();
-    _numberPhoneController = TextEditingController();
-    _numberHouseController = TextEditingController();
-    _numberSectorController = TextEditingController();
-    _addressController = TextEditingController();
+    _cuiController = TextEditingController(text: widget.cui);
+    _nameController = TextEditingController(text: widget.nombre);
+    _secondController = TextEditingController(text: widget.apellido);
+    _ageController = TextEditingController(text: widget.edadMeses);
+    _birthController = TextEditingController(text: widget.nacimiento);
+    _nameMotherController = TextEditingController(text: widget.madre);
+    _nameFatherController = TextEditingController(text: widget.padre);
+    _numberPhoneController = TextEditingController(text: widget.noCel);
+    _numberHouseController = TextEditingController(text: widget.noCasa);
+    _numberSectorController = TextEditingController(text: widget.noSector);
+    _addressController = TextEditingController(text: widget.direccion);
   }
 
   @override
@@ -94,7 +129,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
             //pone de color blanco a todos los iconos del appBar
             iconTheme: IconThemeData(color: Colors.white),
             title: Text(
-              "Registrar niño",
+              "Actualizar",
               style: TextStyle(color: Colors.white),
             )),
         //SingleChildScrollView siver para un srcoll de la pahg cuando se llene
@@ -107,7 +142,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Nuevo registro",
+                      "Actualizar registro",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
@@ -160,7 +195,11 @@ class _RegisterChildrenState extends State<RegisterChildren>
                                           _selectGenero = _value;
                                         }),
                                       },
-                                      hint: Text(_selectGenero),
+                                      hint: Text(
+                                        _selectGenero == "Seleccione una opción"
+                                            ? widget.genero
+                                            : _selectGenero,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -202,7 +241,12 @@ class _RegisterChildrenState extends State<RegisterChildren>
                                           _selectComunidad = _value;
                                         }),
                                       },
-                                      hint: Text(_selectComunidad),
+                                      hint: Text(
+                                        _selectComunidad ==
+                                                "Seleccione una opción"
+                                            ? widget.pueblo
+                                            : _selectComunidad,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -222,6 +266,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
     return AppTextField(
       focusNode: _focusNode,
       controller: _cuiController,
+      //initialValue: cui.toString(),
       autoValidate: _autovalidate,
       validator: validateCui,
       inputText: "Ingrese CUI",
@@ -330,30 +375,42 @@ class _RegisterChildrenState extends State<RegisterChildren>
   Widget _submitRegister() {
     return AppButton(
       color: Colors.blueAccent,
-      nombre: "Crear Registro",
+      nombre: "Actualizar",
       onPressed: () async {
         if (_formkey.currentState.validate()) {
-          ChildService().saveChild(collectionName: "niños", collectionValues: {
-            "fechaRegistro": formatDate(now, [d, '-', m, '-', yyyy]),
-            "cui": _cuiController.text,
-            "nombres": _nameController.text,
-            "apellidos": _secondController.text,
-            "nacimiento": _birthController.text,
-            "genero": _selectGenero,
-            "madre": _nameMotherController.text,
-            "padre": _nameFatherController.text,
-            "noCasa": _numberHouseController.text,
-            "noCel": _numberPhoneController.text,
-            "noSector": _numberSectorController.text,
-            "direccion": _addressController.text,
-            "pueblo": _selectComunidad,
-            "estado": "Normal",
-          });
-          Navigator.pushNamed(context, '/nutriAlert');
+          ChildService().updateRecordChild(
+              collectionName: "niños",
+              id: widget.id,
+              collectionValues: {
+                "cui": _cuiController.text,
+                "nombres": _nameController.text,
+                "apellidos": _secondController.text,
+                "nacimiento": _birthController.text,
+                "genero": _selectGenero == "Seleccione una opción"
+                    ? widget.genero
+                    : _selectGenero,
+                "madre": _nameMotherController.text,
+                "padre": _nameFatherController.text,
+                "noCasa": _numberHouseController.text,
+                "noCel": _numberPhoneController.text,
+                "noSector": _numberSectorController.text,
+                "direccion": _addressController.text,
+                "pueblo": _selectComunidad == "Seleccione una opción"
+                    ? widget.pueblo
+                    : _selectComunidad,
+                "estado": "Normal",
+              });
+
+          //ChildService().saveChild(collectionName: "niños", collectionValues: {
+          //  "fechaRegistro": formatDate(now, [d, '-', m, '-', yyyy]),
+          //});
+          //Navigator.pushNamed(context, "/record");
+          Navigator.pop(context);
+
           _cuiController.text = "";
           _nameController.text = "";
-          _secondController.text = "";
           _ageController.text = "";
+          _secondController.text = "";
           _birthController.text = "";
           _nameMotherController.text = "";
           _nameFatherController.text = "";
@@ -376,4 +433,8 @@ class _RegisterChildrenState extends State<RegisterChildren>
       return Container(height: 0.0);
     }
   }
+
+  //-------------- por si es actualizacion se usa esta funcion -------------------------
+//-----------------------------prueba para obtener regiostro del niño-----------------------------
+
 }

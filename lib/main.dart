@@ -46,12 +46,12 @@ Future<void> main() async {
     routes: <String, WidgetBuilder>{
       NutriAlert.routName: (BuildContext context) => NutriAlert(),
       TestNutritional.routName: (BuildContext context) => TestNutritional(),
-      RegisterChildren.routName: (BuildContext context) => RegisterChildren(),
+      RegisterChildren.routName : (BuildContext context) => RegisterChildren(),
       Visits.routName: (BuildContext context) => Visits(),
       RecordChild.routName: (BuildContext context) => RecordChild(),
 //----------------------------- Páginas Secundarias ------------------------------
       ResultTest.routName: (BuildContext context) => ResultTest(),
-      //StoryChild.routName: (BuildContext context) => StoryChild(Str),
+      //StoryChild.routName: (BuildContext context) => StoryChild(),
 //----------------------------- Páginas Ocpiones ------------------------------
       EditProfile.routName: (BuildContext context) => EditProfile(),
       User.routName: (BuildContext context) => User(),

@@ -10,7 +10,7 @@ class Authentication {
   //para usar un metodo  en donde podamos crear un usuario y solo llamemos a este metodo  lo hacemos de la sig manera
   // pasamos los parametros , sera de tipo asyncrono e importamos la lib de firebas
   Future<AuthenticationRequest> createUser(
-      {String email = "", String password = ""}) async {
+      {String email , String password }) async {
     //hacemos a crear una instancia de AuthenticationRequest
     AuthenticationRequest authRequest = AuthenticationRequest();
     //por si hay un error lo envolvemos priumero en yn try catch
