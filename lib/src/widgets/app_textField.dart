@@ -18,6 +18,8 @@ class AppTextField extends StatelessWidget {
   final TextInputType textInputType;
   //para hacer uso de los mixins tambien tenemos que definirlos aqui
   final FormFieldValidator<String> validator;
+  //variable para desactivar el umero de lineas maximo
+  final bool maxLines;
   //valores calor inicioal en el textField
 
   //para que cuando haya un error y despues se corrija este desaparezca el error
@@ -33,10 +35,11 @@ class AppTextField extends StatelessWidget {
     this.obscureText,
     this.validator,
     this.textInputType,
+    this.maxLines,
   });
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return TextFormField(
       //para la autovalidacion de los textfield
       autovalidate: autoValidate,
@@ -45,6 +48,7 @@ class AppTextField extends StatelessWidget {
       focusNode: focusNode, //posiciona el cursor
       controller: controller, //limpiar el texto3
       keyboardType: textInputType == null ? TextInputType.text : textInputType,
+      maxLines: maxLines == true ? null : 1,
       decoration: InputDecoration(
         ///tamaño del textDield
         isDense: true,

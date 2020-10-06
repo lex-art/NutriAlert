@@ -1,8 +1,11 @@
+import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
+import 'package:NutriAlert/src/screen/second_screen/result_test_release.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_flatButton.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
+
 
 class TestNutritional extends StatefulWidget {
   //nombre de la ruta
@@ -11,16 +14,16 @@ class TestNutritional extends StatefulWidget {
   _TestNutritionalState createState() => _TestNutritionalState();
 }
 
-class _TestNutritionalState extends State<TestNutritional> {
+class _TestNutritionalState extends State<TestNutritional>
+    with ValidationChildMixins {
   bool showSpinner = false;
   FocusNode _focusNode;
   //un global key permite referenciar a un formulario y desde él tener accesos al estado de un textFormfield
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   //tipo de teclado
-  TextInputType textInputType;
+
   //seteamos el autovalidate
   bool _autovalidate = false;
-  String _errorMessage = "";
 
   TextEditingController _nombreController = TextEditingController();
   TextEditingController _edadController = TextEditingController();
@@ -42,7 +45,8 @@ class _TestNutritionalState extends State<TestNutritional> {
     _edadController = TextEditingController();
     _pesoController = TextEditingController();
     _alturaController = TextEditingController();
-    _fechaController = TextEditingController(text:  formatDate(now, [d, '-', M, '-', yyyy]));
+    _fechaController =
+        TextEditingController(text: formatDate(now, [d, '-', M, '-', yyyy]));
   }
 
   @override
@@ -265,6 +269,7 @@ class _TestNutritionalState extends State<TestNutritional> {
 //----------------------------- TextFiel para los datos del niño ---------------------
   Widget _nombre() {
     return AppTextField(
+      focusNode: _focusNode,
       controller: _nombreController,
       autoValidate: _autovalidate,
       inputText: "Nombre del niñ@",
@@ -274,6 +279,7 @@ class _TestNutritionalState extends State<TestNutritional> {
   Widget _edad() {
     return AppTextField(
       controller: _edadController,
+      validator: validateAge,
       autoValidate: _autovalidate,
       inputText: "Edad en meses",
       textInputType: TextInputType.number,
@@ -284,6 +290,7 @@ class _TestNutritionalState extends State<TestNutritional> {
     return AppTextField(
       controller: _pesoController,
       autoValidate: _autovalidate,
+      validator: validateTest,
       inputText: "Peso(Kg)",
       textInputType: TextInputType.number,
     );
@@ -293,6 +300,7 @@ class _TestNutritionalState extends State<TestNutritional> {
     return AppTextField(
       controller: _alturaController,
       autoValidate: _autovalidate,
+      validator: validateTest,
       inputText: "Longitud/Talla(Cm)",
       textInputType: TextInputType.number,
     );
@@ -312,7 +320,23 @@ class _TestNutritionalState extends State<TestNutritional> {
       nombre: "Evaluar",
       color: Colors.blueAccent,
       onPressed: () {
-        Navigator.pushNamed(context, '/result');
+        if (_formkey.currentState.validate()) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ResultTest(
+                        idChild: "2mOt1sWQBNVzLhGOznon",
+                        edad: "26",
+                        peso: "20",
+                        altura: "88",
+                      )));
+        } else {
+          ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
+          ///en false para pasarlo a true
+          setState(() => _autovalidate = true);
+        }
+
+        //Navigator.pushNamed(context, '/result');
       },
     );
   }

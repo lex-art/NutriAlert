@@ -107,7 +107,11 @@ class ChildItem extends StatelessWidget {
               ),
             ),
             //cuando le da click lo lleva a otra pag
-            onTap: () {},
+            onTap: () {
+///------------------------- Mandamos los datos a la pantalla de -----------------------
+
+
+            },
           ),
           Divider(
             height: 1.0,

@@ -80,7 +80,7 @@ class Authentication {
     //code es el msj de errorde
     //firebase y la tenemos que mapear
     switch (code) {
-      case 'user-not-foud':
+      case 'user-not-found':
         authRequest.errorMenssage = "Usuario no encontrado";
         break;
       case 'wrong-password':

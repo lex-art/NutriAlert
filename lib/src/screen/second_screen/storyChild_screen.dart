@@ -166,13 +166,11 @@ class _StoryChildState extends State<StoryChild> {
     if (action == "yes") {
       ChildService().deleteChild("niños", widget.id);
       Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => NutriAlert()));
+          context, MaterialPageRoute(builder: (context) => NutriAlert()));
     }
     if (action == "no") {
-    Navigator.pop(context);
-     // Navigator.pushNamed(context, "/nutriAlert");
+      Navigator.pop(context);
+      // Navigator.pushNamed(context, "/nutriAlert");
     }
     print("Tu seleccion es  $action");
   }
@@ -224,13 +222,10 @@ class _StoryChildState extends State<StoryChild> {
                 stream: ChildService().getChildStoryStream(widget.id),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return PageView(
-                      children: [
-//--------------------------- Priemra Pantalla --------------------------------
-                        Container(
-                            child: Column(
+                    return PageView(children: [
+                      SingleChildScrollView(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          //mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             DataTable(
                                 //sortColumnIndex: 0,
@@ -259,52 +254,56 @@ class _StoryChildState extends State<StoryChild> {
                                               fontWeight: FontWeight.bold,
                                               color: Theme.of(context)
                                                   .accentColor))),
+                                  DataColumn(
+                                      label: Text("PesoEdad",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .accentColor))),
+                                  DataColumn(
+                                      label: Text("PesoAltura",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .accentColor))),
                                 ], rows: _getRow(snapshot.data.documents)),
                           ],
-                        )),
+                        ),
+                      ),
 //----------------------------------------- Segunda Pantalla ------------------------------------
-                        Container(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          //mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            DataTable(
-                                //sortColumnIndex: 0,
-                                columns: [
-                                  DataColumn(
-                                      label: Text("Peso/Edad",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                  DataColumn(
-                                      label: Text("Talla/Edad",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                  DataColumn(
-                                      label: Text("Z \n0-2",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                  DataColumn(
-                                      label: Text("Z \n3-5",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                ], rows: _getRow2(snapshot.data.documents)),
-                          ],
-                        )),
+                      SingleChildScrollView(
+                        child: DataTable(
+                            //sortColumnIndex: 0,
+                            columns: [
+                              DataColumn(
+                                  label: Text("Peso/Edad",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .accentColor))),
+                              DataColumn(
+                                  label: Text("Talla/Edad",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .accentColor))),
+                              DataColumn(
+                                  label: Text("Z \n0-2",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .accentColor))),
+                              DataColumn(
+                                  label: Text("Z \n3-5",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Theme.of(context)
+                                              .accentColor))),
+                            ], rows: _getRow2(snapshot.data.documents)),
+                      ),
 //--------------------------- Tercera Pantalla --------------------------------
-                        Container(
-                            child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          //mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            DataTable(
+                       SingleChildScrollView(
+                          child: DataTable(
                                 //sortColumnIndex: 0,
                                 columns: [
                                   DataColumn(
@@ -326,10 +325,11 @@ class _StoryChildState extends State<StoryChild> {
                                               color: Theme.of(context)
                                                   .accentColor))),
                                 ], rows: _getRow3(snapshot.data.documents)),
-                          ],
-                        ))
-                      ],
-                    );
+                      
+
+                       )
+
+                    ]);
                   } else {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -355,6 +355,8 @@ class _StoryChildState extends State<StoryChild> {
       DataCell(Text(fecha)),
       DataCell(Text("$edad Meses")),
       DataCell(Text("$peso kg")),
+      DataCell(Text("$talla cm")),
+      DataCell(Text("$talla cm")),
       DataCell(Text("$talla cm")),
       //DataRow(cells: [DataCell(Text("help")),
     ]);
@@ -390,8 +392,8 @@ class _StoryChildState extends State<StoryChild> {
   List<DataRow> _getRow3(dynamic storys) {
     List<DataRow> storyChild = [];
     for (var story in storys) {
-      storyChild.add(
-          buildDataRow3(story.data()["tratamiento"], story.data()["estado"], story.data()["proximaCita"]));
+      storyChild.add(buildDataRow3(story.data()["tratamiento"],
+          story.data()["estado"], story.data()["proximaCita"]));
     }
     return storyChild;
   }
@@ -455,7 +457,7 @@ SafeArea(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).accentColor)))
               ], rows: [
-            buildDataRow(),
+            buildDataRow(), 
           ]),
         ],
       )),

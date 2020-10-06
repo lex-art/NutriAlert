@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class RegisterChildren extends StatefulWidget {
   //nombre de la ruta
@@ -15,6 +16,9 @@ class RegisterChildren extends StatefulWidget {
 
 class _RegisterChildrenState extends State<RegisterChildren>
     with ValidationChildMixins {
+       //seteamos el autovalidate
+  bool _autovalidate = false;
+  String _errorMessage = "";
   //obtenemos la fecha del sistema
   var now = DateTime.now().toUtc().toLocal();
   //------variables para las textxt field y botones
@@ -36,9 +40,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
   TextEditingController _numberHouseController = TextEditingController();
   TextEditingController _numberSectorController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
-  //seteamos el autovalidate
-  bool _autovalidate = false;
-  String _errorMessage = "";
+ 
 
   //-------------- constructor de la app --------------
   @override
@@ -86,6 +88,8 @@ class _RegisterChildrenState extends State<RegisterChildren>
   String _selectGenero = "Seleccione una opción";
   String _selectComunidad = "Seleccione una opción";
 
+  DateTime _dateTime;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,123 +102,148 @@ class _RegisterChildrenState extends State<RegisterChildren>
               style: TextStyle(color: Colors.white),
             )),
         //SingleChildScrollView siver para un srcoll de la pahg cuando se llene
-        body: SingleChildScrollView(
-            padding: EdgeInsets.only(left: 30, right: 30, top: 15),
-            child: Stack(
-              alignment: AlignmentDirectional.topEnd,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Nuevo registro",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                    ),
-                    Text(
-                      "${formatDate(now, [d, '-', M, '-', yyyy])}",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    )
-                  ],
-                ),
-                //------------------ Formulario para crear un nuevo registro de un niño --------------
-                Form(
-                    key: _formkey,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 40.0),
-                      child: Column(
-                          //crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            _cui(),
-                            SizedBox(height: 15.0),
-                            _name(),
-                            SizedBox(height: 15.0),
-                            _secondName(),
-                            SizedBox(height: 15.0),
-                            _age(),
-                            SizedBox(height: 15.0),
-                            _birth(),
-                            SizedBox(height: 15.0),
-                            Material(
-                              color: Colors.white,
-                              //elevation: 0,
-                              borderRadius: BorderRadius.circular(50.0),
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                height: 35,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    DropdownButton(
-                                      items: _genero.map((String a) {
-                                        return DropdownMenuItem(
-                                            value: a, child: Text(a));
-                                      }).toList(),
-                                      onChanged: (_value) => {
-                                        setState(() {
-                                          _selectGenero = _value;
-                                        }),
-                                      },
-                                      hint: Text(_selectGenero),
-                                    ),
-                                  ],
+        body: ModalProgressHUD(
+          inAsyncCall: showSpinner,
+          child: SingleChildScrollView(
+              padding: EdgeInsets.only(left: 30, right: 30, top: 15),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Nuevo registro",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal),
+                      ),
+                      Text(
+                        "${formatDate(now, [d, '-', M, '-', yyyy])}",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      )
+                    ],
+                  ),
+                  //------------------ Formulario para crear un nuevo registro de un niño --------------
+                  Form(
+                      key: _formkey,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 40.0),
+                        child: Column(
+                            //crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              _cui(),
+                              SizedBox(height: 15.0),
+                              _name(),
+                              SizedBox(height: 15.0),
+                              _secondName(),
+                              SizedBox(height: 15.0),
+                              _age(),
+                              SizedBox(height: 15.0),
+                              RaisedButton.icon(
+                                  onPressed: () {
+                                    showDatePicker(
+                                            context: context,
+                                            initialDate: _dateTime == null
+                                                ? DateTime.now()
+                                                    .toUtc()
+                                                    .toLocal()
+                                                : _dateTime,
+                                            firstDate: DateTime(2010),
+                                            lastDate: DateTime(2050))
+                                        .then((date) {
+                                      setState(() {
+                                        _dateTime = date;
+                                      });
+                                    });
+                                  },
+                                  icon: Icon(
+                                    Icons.date_range,
+                                    color: Colors.white,
+                                  ),
+                                  label: Text(
+                                    "Nacimiento",
+                                    style: TextStyle(color: Colors.white),
+                                  )),
+                              SizedBox(height: 15.0),
+                              Material(
+                                color: Colors.white,
+                                //elevation: 0,
+                                borderRadius: BorderRadius.circular(50.0),
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 35,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      DropdownButton(
+                                        items: _genero.map((String a) {
+                                          return DropdownMenuItem(
+                                              value: a, child: Text(a));
+                                        }).toList(),
+                                        onChanged: (_value) => {
+                                          setState(() {
+                                            _selectGenero = _value;
+                                          }),
+                                        },
+                                        hint: Text(_selectGenero),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 15.0),
-                            _nameMother(),
-                            SizedBox(height: 15.0),
-                            _nameFather(),
-                            SizedBox(height: 15.0),
-                            _numberHouse(),
-                            SizedBox(height: 15.0),
-                            _numberPhone(),
-                            SizedBox(height: 15.0),
-                            _numberSector(),
-                            SizedBox(height: 15.0),
-                            _address(),
-                            SizedBox(height: 15.0),
-                            Material(
-                              color: Colors.white,
-                              //elevation: 0,
-                              borderRadius: BorderRadius.circular(50.0),
-                              child: Container(
-                                padding: EdgeInsets.all(10),
-                                height: 35,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    DropdownButton(
-                                      items: _comunidad.map((String a) {
-                                        return DropdownMenuItem(
-                                            value: a, child: Text(a));
-                                      }).toList(),
-                                      onChanged: (_value) => {
-                                        setState(() {
-                                          _selectComunidad = _value;
-                                        }),
-                                      },
-                                      hint: Text(_selectComunidad),
-                                    ),
-                                  ],
+                              SizedBox(height: 15.0),
+                              _nameMother(),
+                              SizedBox(height: 15.0),
+                              _nameFather(),
+                              SizedBox(height: 15.0),
+                              _numberHouse(),
+                              SizedBox(height: 15.0),
+                              _numberPhone(),
+                              SizedBox(height: 15.0),
+                              _numberSector(),
+                              SizedBox(height: 15.0),
+                              _address(),
+                              SizedBox(height: 15.0),
+                              Material(
+                                color: Colors.white,
+                                //elevation: 0,
+                                borderRadius: BorderRadius.circular(50.0),
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 35,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      DropdownButton(
+                                        items: _comunidad.map((String a) {
+                                          return DropdownMenuItem(
+                                              value: a, child: Text(a));
+                                        }).toList(),
+                                        onChanged: (_value) => {
+                                          setState(() {
+                                            _selectComunidad = _value;
+                                          }),
+                                        },
+                                        hint: Text(_selectComunidad),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            _showErrorMessage(),
-                            _submitRegister()
-                          ]),
-                    ))
-              ],
-              overflow: Overflow.clip,
-            )));
+                              _showErrorMessage(),
+                              _submitRegister()
+                            ]),
+                      ))
+                ],
+              )),
+        ));
   }
 
   /// TextFiel para el formulario ára crear un nuevo niño
@@ -254,26 +283,18 @@ class _RegisterChildrenState extends State<RegisterChildren>
     return AppTextField(
       controller: _ageController,
       autoValidate: _autovalidate,
-      validator: validateApe,
+      validator: validateAge,
       inputText: "Edad en Meses",
       onSaved: (value) {},
     );
   }
 
-  Widget _birth() {
-    return AppTextField(
-      controller: _birthController,
-      autoValidate: _autovalidate,
-      validator: validateBirth,
-      inputText: "Fecha de nacimiento",
-      textInputType: TextInputType.datetime, //tipo de teclado
-      onSaved: (value) {},
-    );
-  }
+
 
   Widget _nameMother() {
     return AppTextField(
       controller: _nameMotherController,
+      validator: validateMother,
       autoValidate: _autovalidate,
       inputText: "Nombre de la madre o responsable",
       onSaved: (value) {},
@@ -332,14 +353,21 @@ class _RegisterChildrenState extends State<RegisterChildren>
       color: Colors.blueAccent,
       nombre: "Crear Registro",
       onPressed: () async {
+
         if (_formkey.currentState.validate()) {
-          ChildService().saveChild(collectionName: "niños", collectionValues: {
+          //cuando se incia el procesos de auntenricacion llamamos al metodo que hara el progress bar
+          //para inciarlo
+          setSpinnerStatus(true);
+          //aqui validamos  el usuario en firebase
+          var child = await ChildService()
+              .saveChild(collectionName: "niños", collectionValues: {
             "fechaRegistro": formatDate(now, [d, '-', m, '-', yyyy]),
             "cui": _cuiController.text,
             "nombres": _nameController.text,
             "apellidos": _secondController.text,
-            "nacimiento": _birthController.text,
+            "nacimiento": formatDate(_dateTime, [d, '-', M, '-', yyyy]),
             "genero": _selectGenero,
+            "edad": _ageController.text,
             "madre": _nameMotherController.text,
             "padre": _nameFatherController.text,
             "noCasa": _numberHouseController.text,
@@ -347,22 +375,41 @@ class _RegisterChildrenState extends State<RegisterChildren>
             "noSector": _numberSectorController.text,
             "direccion": _addressController.text,
             "pueblo": _selectComunidad,
-            "estado": "Normal",
+            "estado": "Sin Evaluar",
           });
-          Navigator.pushNamed(context, '/nutriAlert');
-          _cuiController.text = "";
-          _nameController.text = "";
-          _secondController.text = "";
-          _ageController.text = "";
-          _birthController.text = "";
-          _nameMotherController.text = "";
-          _nameFatherController.text = "";
-          _numberHouseController.text = "";
-          _numberHouseController.text = "";
-          _numberPhoneController.text = "";
-          _numberSectorController.text = "";
-          _addressController.text = "";
-          FocusScope.of(context).requestFocus(_focusNode);
+          //si es distinto a nul entonces el usuario existe
+          if (child.success) {
+            //si el logueo es exitosos entra aqui
+           Navigator.pushNamed(context, '/nutriAlert');
+           
+            FocusScope.of(context).requestFocus(_focusNode);
+
+            _cuiController.text = "";
+            _nameController.text = "";
+            _secondController.text = "";
+            _ageController.text = "";
+            _birthController.text = "";
+            _nameMotherController.text = "";
+            _nameFatherController.text = "";
+            _numberHouseController.text = "";
+            _numberHouseController.text = "";
+            _numberPhoneController.text = "";
+            _numberSectorController.text = "";
+            _addressController.text = "";
+           
+          
+          } else {
+            //si no es exitoso entra en esta parte, donde muestra el error en un widget
+            setState(() {
+              _errorMessage = child.errorMenssage;
+            });
+          }
+          //cuando termine el proceso de auntenticaion se cierrar la barra de progreso
+          setSpinnerStatus(false);
+        } else {
+          ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
+          ///en false para pasarlo a true
+          setState(() =>  _autovalidate  = true);
         }
       },
     );

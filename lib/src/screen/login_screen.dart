@@ -92,7 +92,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
                       ],
                     ),
                   )),
-            )));
+            ))
+            );
   }
 
   //metodos para los inputs y botones
@@ -133,11 +134,12 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
           //aqui validamos  el usuario en firebase
           var auth = await Authentication().loginUser(
               email: _emailController.text, password: _passwordController.text);
+
           //si es distinto a nul entonces el usuario existe
           if (auth.success) {
             _getUser();
             //si el logueo es exitosos entra aqui
-            Navigator.pushNamed(context, '/nutriAlert');
+            // Navigator.pushNamed(context, '/nutriAlert');
             //aca utilizamos el focus node
             FocusScope.of(context).requestFocus(_focusNode);
             //aca lipiamos los textfield despues autenticarnos
@@ -160,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
     );
   }
 
-  //---------------------------- Metodo para obtener el usaurios en la bd -----------
+  //--------------------------- Metodo para obtener el usaurios en la bd -----------
   void _getUser() async {
     //obtner el id del usuaio
     var user = await Authentication().getCurrentUser();
@@ -174,8 +176,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
       //verificamos que sea el mismo usuario
       if (usuario.id == idUser) {
         //si es el mismo usuairo, ahora vemos que rol tiene
-        if (usuario.get("rol") == "admin") {
-        
+        if (usuario.get("rol") == "Administrador") {
+          print("aqui-------------------------------------");
           //por ultimo lo redirigimos a la pagina que quiere
           Navigator.pushNamed(context, '/nutriAlert');
           break;
@@ -184,6 +186,8 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
           break;
         }
       } else {
+        ///print("111-------" + idUser);
+        ///print("222-------" + usuario.id);
         print("Usuario no valido");
       }
     }

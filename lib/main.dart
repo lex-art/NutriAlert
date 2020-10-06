@@ -7,9 +7,9 @@ import 'package:NutriAlert/src/screen/options_screens/help.dart';
 import 'package:NutriAlert/src/screen/options_screens/registrationUser_screen.dart';
 import 'package:NutriAlert/src/screen/record_child.dart';
 import 'package:NutriAlert/src/screen/register_child.dart';
-import 'package:NutriAlert/src/screen/test_nutritional.dart';
+import 'package:NutriAlert/src/screen/test_nutritional_release.dart';
 import 'package:NutriAlert/src/screen/visits.dart';
-import 'package:NutriAlert/src/screen/second_screen/result_test.dart';
+import 'package:NutriAlert/src/screen/second_screen/result_test_release.dart';
 import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/screen/options_screens/listUser_screen.dart';
 
@@ -50,7 +50,7 @@ Future<void> main() async {
       Visits.routName: (BuildContext context) => Visits(),
       RecordChild.routName: (BuildContext context) => RecordChild(),
 //----------------------------- Páginas Secundarias ------------------------------
-      ResultTest.routName: (BuildContext context) => ResultTest(),
+      //ResultTest.routName: (BuildContext context) => ResultTest(),
       //StoryChild.routName: (BuildContext context) => StoryChild(),
 //----------------------------- Páginas Ocpiones ------------------------------
       EditProfile.routName: (BuildContext context) => EditProfile(),
