@@ -1,4 +1,4 @@
-class RegisterChildRequest {
+class ChildRequest {
   bool success = false; //si es exitosa
-  String errorMenssage; 
+  String errorMenssage;
 }

@@ -109,6 +109,19 @@ class _ViewRecordChildState extends State<ViewRecordChild> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
+                    "Edad: ",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  Text("${widget.edadMeses} Meses", style: TextStyle(fontSize: 20)),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
                     "Madre: ",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),

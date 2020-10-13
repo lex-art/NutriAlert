@@ -137,14 +137,13 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
 
           //si es distinto a nul entonces el usuario existe
           if (auth.success) {
-            _getUser();
-            //si el logueo es exitosos entra aqui
-            // Navigator.pushNamed(context, '/nutriAlert');
-            //aca utilizamos el focus node
-            FocusScope.of(context).requestFocus(_focusNode);
+            //_getUser();
+            Navigator.pushNamed(context, '/nutriAlert');            
             //aca lipiamos los textfield despues autenticarnos
             _emailController.text = "";
             _passwordController.text = "";
+            //aca utilizamos el focus node
+            FocusScope.of(context).requestFocus(_focusNode);
           } else {
             //si no es exitoso entra en esta parte, donde muestra el error en un widget
             setState(() {
@@ -185,11 +184,11 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
           Navigator.pushNamed(context, '/record');
           break;
         }
-      } else {
+      } //else {
         ///print("111-------" + idUser);
         ///print("222-------" + usuario.id);
-        print("Usuario no valido");
-      }
+       // print("Usuario no valido");
+      //}
     }
   }
 

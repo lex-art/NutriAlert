@@ -1,3 +1,4 @@
+import 'package:NutriAlert/src/algoritmos/proxima_cita.dart';
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
 import 'package:NutriAlert/src/widgets/app_error_message.dart';
@@ -16,11 +17,13 @@ class RegisterChildren extends StatefulWidget {
 
 class _RegisterChildrenState extends State<RegisterChildren>
     with ValidationChildMixins {
-       //seteamos el autovalidate
+  //seteamos el autovalidate
   bool _autovalidate = false;
   String _errorMessage = "";
   //obtenemos la fecha del sistema
   var now = DateTime.now().toUtc().toLocal();
+  var nacimiento = DateTime.now().toUtc().toLocal();
+  DateTime _dateTime;
   //------variables para las textxt field y botones
   bool showSpinner = false;
   FocusNode _focusNode;
@@ -40,7 +43,6 @@ class _RegisterChildrenState extends State<RegisterChildren>
   TextEditingController _numberHouseController = TextEditingController();
   TextEditingController _numberSectorController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
- 
 
   //-------------- constructor de la app --------------
   @override
@@ -86,9 +88,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
   var _genero = ["Masculino", "Femenino"];
   var _comunidad = ["Maya", "Mestizo", "Garífuna", "Xinca", "Otro"];
   String _selectGenero = "Seleccione una opción";
-  String _selectComunidad = "Seleccione una opción";
-
-  DateTime _dateTime;
+  String _selectComunidad = "Maya";
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +119,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
                             fontWeight: FontWeight.normal),
                       ),
                       Text(
-                        "${formatDate(now, [d, '-', M, '-', yyyy])}",
+                        CalculateDate().fechaActual(),
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       )
                     ],
@@ -128,7 +128,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
                   Form(
                       key: _formkey,
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 40.0),
+                        padding: const EdgeInsets.only(top: 20.0),
                         child: Column(
                             //crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
@@ -140,31 +140,44 @@ class _RegisterChildrenState extends State<RegisterChildren>
                               SizedBox(height: 15.0),
                               _age(),
                               SizedBox(height: 15.0),
-                              RaisedButton.icon(
-                                  onPressed: () {
-                                    showDatePicker(
-                                            context: context,
-                                            initialDate: _dateTime == null
-                                                ? DateTime.now()
-                                                    .toUtc()
-                                                    .toLocal()
-                                                : _dateTime,
-                                            firstDate: DateTime(2010),
-                                            lastDate: DateTime(2050))
-                                        .then((date) {
-                                      setState(() {
-                                        _dateTime = date;
-                                      });
-                                    });
-                                  },
-                                  icon: Icon(
-                                    Icons.date_range,
-                                    color: Colors.white,
-                                  ),
-                                  label: Text(
-                                    "Nacimiento",
-                                    style: TextStyle(color: Colors.white),
-                                  )),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  RaisedButton.icon(
+                                      onPressed: () {
+                                        showDatePicker(
+                                                context: context,
+                                                initialDate: _dateTime == null
+                                                    ? DateTime.now()
+                                                        .toUtc()
+                                                        .toLocal()
+                                                    : _dateTime,
+                                                firstDate: DateTime(2010),
+                                                lastDate: DateTime(2050))
+                                            .then((date) {
+                                          setState(() {
+                                            nacimiento = date;
+                                          });
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.date_range,
+                                        color: Colors.white,
+                                      ),
+                                      label: Text(
+                                        "Nacimiento",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                  Text(
+                                    formatDate(
+                                        nacimiento == null ? now : nacimiento,
+                                        [d, '-', M, '-', yyyy]),
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  )
+                                ],
+                              ),
                               SizedBox(height: 15.0),
                               Material(
                                 color: Colors.white,
@@ -237,6 +250,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
                                   ),
                                 ),
                               ),
+                              SizedBox(height: 15.0),
                               _showErrorMessage(),
                               _submitRegister()
                             ]),
@@ -283,13 +297,12 @@ class _RegisterChildrenState extends State<RegisterChildren>
     return AppTextField(
       controller: _ageController,
       autoValidate: _autovalidate,
+      textInputType: TextInputType.number,
       validator: validateAge,
       inputText: "Edad en Meses",
       onSaved: (value) {},
     );
   }
-
-
 
   Widget _nameMother() {
     return AppTextField(
@@ -353,63 +366,74 @@ class _RegisterChildrenState extends State<RegisterChildren>
       color: Colors.blueAccent,
       nombre: "Crear Registro",
       onPressed: () async {
-
-        if (_formkey.currentState.validate()) {
-          //cuando se incia el procesos de auntenricacion llamamos al metodo que hara el progress bar
-          //para inciarlo
-          setSpinnerStatus(true);
-          //aqui validamos  el usuario en firebase
-          var child = await ChildService()
-              .saveChild(collectionName: "niños", collectionValues: {
-            "fechaRegistro": formatDate(now, [d, '-', m, '-', yyyy]),
-            "cui": _cuiController.text,
-            "nombres": _nameController.text,
-            "apellidos": _secondController.text,
-            "nacimiento": formatDate(_dateTime, [d, '-', M, '-', yyyy]),
-            "genero": _selectGenero,
-            "edad": _ageController.text,
-            "madre": _nameMotherController.text,
-            "padre": _nameFatherController.text,
-            "noCasa": _numberHouseController.text,
-            "noCel": _numberPhoneController.text,
-            "noSector": _numberSectorController.text,
-            "direccion": _addressController.text,
-            "pueblo": _selectComunidad,
-            "estado": "Sin Evaluar",
+        if (_selectGenero != "Seleccione una opción" &&
+            formatDate(nacimiento, [d, '-', M, '-', yyyy]) !=
+                formatDate(now, [d, '-', M, '-', yyyy])) {
+          setState(() {
+            _errorMessage = "";
+            _showErrorMessage();
           });
-          //si es distinto a nul entonces el usuario existe
-          if (child.success) {
-            //si el logueo es exitosos entra aqui
-           Navigator.pushNamed(context, '/nutriAlert');
-           
-            FocusScope.of(context).requestFocus(_focusNode);
 
-            _cuiController.text = "";
-            _nameController.text = "";
-            _secondController.text = "";
-            _ageController.text = "";
-            _birthController.text = "";
-            _nameMotherController.text = "";
-            _nameFatherController.text = "";
-            _numberHouseController.text = "";
-            _numberHouseController.text = "";
-            _numberPhoneController.text = "";
-            _numberSectorController.text = "";
-            _addressController.text = "";
-           
-          
-          } else {
-            //si no es exitoso entra en esta parte, donde muestra el error en un widget
-            setState(() {
-              _errorMessage = child.errorMenssage;
+          if (_formkey.currentState.validate()) {
+            //progress barpara inciarlo
+            setSpinnerStatus(true);
+            //mandamos los parametros necesarios al cloud  firestore
+            var child = await ChildService()
+                .saveChild(collectionName: "niños", collectionValues: {
+              "fechaRegistro": formatDate(now, [d, '-', M, '-', yyyy]),
+              "cui": _cuiController.text,
+              "nombres": _nameController.text,
+              "apellidos": _secondController.text,
+              "nacimiento": formatDate(nacimiento, [d, '-', M, '-', yyyy]),
+              "genero": _selectGenero,
+              "edadMeses": _ageController.text,
+              "madre": _nameMotherController.text,
+              "padre": _nameFatherController.text,
+              "noCasa": _numberHouseController.text,
+              "noCel": _numberPhoneController.text,
+              "noSector": _numberSectorController.text,
+              "direccion": _addressController.text,
+              "pueblo": _selectComunidad,
+              "estado": "Sin evaluar",
+              "proxCita": "Sin evaluar"
             });
+            //verificamos si se guardo el registro correctamente
+            if (child.success) {
+              Navigator.pushNamed(context, '/nutriAlert');
+
+              FocusScope.of(context).requestFocus(_focusNode);
+
+              _cuiController.text = "";
+              _nameController.text = "";
+              _secondController.text = "";
+              _ageController.text = "";
+              _birthController.text = "";
+              _nameMotherController.text = "";
+              _nameFatherController.text = "";
+              _numberHouseController.text = "";
+              _numberHouseController.text = "";
+              _numberPhoneController.text = "";
+              _numberSectorController.text = "";
+              _addressController.text = "";
+            } else {
+              //si no es exitoso entra en esta parte, donde muestra el error en un widget
+              setState(() {
+                _errorMessage = child.errorMenssage;
+              });
+            }
+            //cuando termine el proceso de registro se cierrar la barra de progreso
+            setSpinnerStatus(false);
+          } else {
+            ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
+            ///en false para pasarlo a true
+            setState(() => _autovalidate = true);
           }
-          //cuando termine el proceso de auntenticaion se cierrar la barra de progreso
-          setSpinnerStatus(false);
         } else {
-          ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
-          ///en false para pasarlo a true
-          setState(() =>  _autovalidate  = true);
+          setState(() {
+            _errorMessage =
+                "Seleccione una fecha correcta o bien seleccione un género";
+            _showErrorMessage();
+          });
         }
       },
     );

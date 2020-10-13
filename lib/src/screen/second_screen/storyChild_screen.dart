@@ -162,11 +162,16 @@ class _StoryChildState extends State<StoryChild> {
 
 //---------------------------------- Para eliminar el registro -----------------------
   //metodo donde colocamos el resultado del alert
-  void alertResultado(String action) {
+  Future<void> alertResultado(String action) async {
     if (action == "yes") {
-      ChildService().deleteChild("niños", widget.id);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NutriAlert()));
+      var resul = await ChildService()
+          .deleteChild(collectionName: 'niños', id: widget.id);
+
+      if (resul.success) {
+       Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => NutriAlert()),
+                (Route<dynamic> route) => false);
+      }
     }
     if (action == "no") {
       Navigator.pop(context);
@@ -279,56 +284,53 @@ class _StoryChildState extends State<StoryChild> {
                                   label: Text("Peso/Edad",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .accentColor))),
+                                          color:
+                                              Theme.of(context).accentColor))),
                               DataColumn(
                                   label: Text("Talla/Edad",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .accentColor))),
+                                          color:
+                                              Theme.of(context).accentColor))),
                               DataColumn(
                                   label: Text("Z \n0-2",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .accentColor))),
+                                          color:
+                                              Theme.of(context).accentColor))),
                               DataColumn(
                                   label: Text("Z \n3-5",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Theme.of(context)
-                                              .accentColor))),
+                                          color:
+                                              Theme.of(context).accentColor))),
                             ], rows: _getRow2(snapshot.data.documents)),
                       ),
 //--------------------------- Tercera Pantalla --------------------------------
-                       SingleChildScrollView(
-                          child: DataTable(
-                                //sortColumnIndex: 0,
-                                columns: [
-                                  DataColumn(
-                                      label: Text("Tratamiento",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                  DataColumn(
-                                      label: Text("Estado",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                  DataColumn(
-                                      label: Text("Prox. Cita",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                ], rows: _getRow3(snapshot.data.documents)),
-                      
-
-                       )
-
+                      SingleChildScrollView(
+                        child: DataTable(
+                            //sortColumnIndex: 0,
+                            columns: [
+                              DataColumn(
+                                  label: Text("Tratamiento",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).accentColor))),
+                              DataColumn(
+                                  label: Text("Estado",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).accentColor))),
+                              DataColumn(
+                                  label: Text("Prox. Cita",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).accentColor))),
+                            ], rows: _getRow3(snapshot.data.documents)),
+                      )
                     ]);
                   } else {
                     return Column(

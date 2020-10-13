@@ -1,3 +1,4 @@
+import 'package:NutriAlert/src/screen/test_screen/test_nutritional.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
 import 'package:flutter/material.dart';
 
@@ -52,6 +53,7 @@ class _VisitsState extends State<Visits> {
         apellidos: child.data()["apellidos"],
         edad: child.data()["edadMeses"],
         proxCita: child.data()["proxCita"],
+        genero: child.data()["genero"],
       ));
     }
     return childItem;
@@ -59,13 +61,14 @@ class _VisitsState extends State<Visits> {
 }
 
 class ChildItem extends StatelessWidget {
-  final String nombres, edad, apellidos, proxCita, id;
+  final String nombres, edad, apellidos, proxCita, id, genero;
   ChildItem({
     this.id,
     this.nombres,
     this.apellidos,
     this.edad,
     this.proxCita,
+    this.genero
   });
   @override
   Widget build(BuildContext context) {
@@ -99,18 +102,16 @@ class ChildItem extends StatelessWidget {
               child: Text(
                 proxCita,
                 style: TextStyle(
-                    color: proxCita == "Grave"
-                        ? Colors.red
-                        : proxCita == "Moderado" ? Colors.orange : Colors.red,
+                    color: Colors.red,
                     fontWeight: FontWeight.bold,
                     fontSize: 14.0),
               ),
             ),
             //cuando le da click lo lleva a otra pag
             onTap: () {
-///------------------------- Mandamos los datos a la pantalla de -----------------------
-
-
+//------------------------- Mandamos los datos a la pantalla de -----------------------
+               Navigator.of(context).push(
+                  MaterialPageRoute<Null>(builder: (BuildContext context)  => TestNutritional(id: id, nombre: nombres, edad: edad, genero: genero,)));
             },
           ),
           Divider(

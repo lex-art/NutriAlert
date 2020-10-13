@@ -1,4 +1,5 @@
 import 'package:NutriAlert/src/service/authentication.dart';
+import 'package:NutriAlert/src/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:NutriAlert/src/widgets/app_cardMenu.dart';
 
@@ -13,6 +14,41 @@ class NutriAlert extends StatefulWidget {
 }
 
 class _NutriAlertState extends State<NutriAlert> {
+  //guardamos el usuario que nos llega desde firebase, para poder crear una especie de sesion en la app
+  var loggedInUser;
+  bool admin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() async {
+    //como lo fijimos firenbase trabaj con progra asyncrona y por eso se usa await y async
+    var user = await Authentication().getCurrentUser(); //obtenemos el usaurio
+    //le pasamos el usuriuo que trajimos de firebase y la asignamos la loggedInUdser
+    if (user != null) {
+      loggedInUser = user;
+      final usuarios = await UserService().getUser();
+      for (var usuario in usuarios.docs) {
+        //print("-----------------------------------------${usuario.get("rol")}");
+        //verificamos que sea el mismo usuario
+        if (usuario.id == loggedInUser.uid) {
+          //si es el mismo usuairo, ahora vemos que rol tiene
+          if (usuario.get("rol") == "Administrador") {
+            //por ultimo lo redirigimos a la pagina que quiere
+            admin = true;
+            setState(() {
+              getDrawer(context);
+            });
+            break;
+          }
+        }
+      }
+    }
+  }
+
   //menu end drawer
   Drawer getDrawer(BuildContext context) {
     //info de la aplición
@@ -45,7 +81,7 @@ class _NutriAlertState extends State<NutriAlert> {
       );
     }
 
-    //lista de opcions
+    //lista de opcions para uduarios administradores
     ListView getList() {
       return ListView(
         children: <Widget>[
@@ -75,8 +111,36 @@ class _NutriAlertState extends State<NutriAlert> {
       );
     }
 
+    //lista de opcions para uduarios normales
+    ListView getList2() {
+      return ListView(
+        children: <Widget>[
+          //header,
+          Container(
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Opciones",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                ],
+              )),
+
+          getItem(Icon(Icons.edit), "Editar Perfil", "/edit"),
+          getItem(Icon(Icons.help_outline), "Ayuda", "/help"),
+          getItem(Icon(Icons.exit_to_app), "Cerrar sesión", "salir"),
+          info,
+        ],
+      );
+    }
+
     return Drawer(
-      child: getList(),
+      child: admin == true ? getList() : getList2(),
     );
   }
 
@@ -96,7 +160,6 @@ class _NutriAlertState extends State<NutriAlert> {
           automaticallyImplyLeading: false,
         ),
         endDrawer: getDrawer(context),
-        
         body: SingleChildScrollView(
           child: Container(
             child: Column(
@@ -125,15 +188,15 @@ class _NutriAlertState extends State<NutriAlert> {
                 ),
                 //primeros dos botones
                 Container(
-                padding: EdgeInsets.only(top: 15),
+                    padding: EdgeInsets.only(top: 15),
                     child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    //-------------------- Opciones del menú principal ------------
-                    _testNutritional(),
-                    _registerChildren(),
-                  ],
-                )),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        //-------------------- Opciones del menú principal ------------
+                        _testNutritional(),
+                        _registerChildren(),
+                      ],
+                    )),
                 //Botones de abajo
                 Container(
                     child: Row(
@@ -160,7 +223,7 @@ class _NutriAlertState extends State<NutriAlert> {
       ),
       text: "Evaluar",
       onPressed: () {
-        Navigator.pushNamed(context, '/test');
+        Navigator.pushNamed(context, "/test");
       },
     );
   }

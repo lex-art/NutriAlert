@@ -45,7 +45,7 @@ Future<void> main() async {
     //demas rutas de la app
     routes: <String, WidgetBuilder>{
       NutriAlert.routName: (BuildContext context) => NutriAlert(),
-      TestNutritional.routName: (BuildContext context) => TestNutritional(),
+      TestNutritionalRelease.routName: (BuildContext context) => TestNutritionalRelease(),
       RegisterChildren.routName : (BuildContext context) => RegisterChildren(),
       Visits.routName: (BuildContext context) => Visits(),
       RecordChild.routName: (BuildContext context) => RecordChild(),

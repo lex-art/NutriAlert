@@ -1,15 +1,15 @@
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
-import 'package:NutriAlert/src/screen/second_screen/result_test_release.dart';
+import 'package:NutriAlert/src/screen/test_screen/result_test.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_flatButton.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
 
-
 class TestNutritional extends StatefulWidget {
-  //nombre de la ruta
-  static const String routName = "/test";
+  //parametros para iniciar el test
+  final String id, nombre, edad,  genero;
+  TestNutritional({this.id, this.nombre, this.edad, this.genero});
   @override
   _TestNutritionalState createState() => _TestNutritionalState();
 }
@@ -25,11 +25,8 @@ class _TestNutritionalState extends State<TestNutritional>
   //seteamos el autovalidate
   bool _autovalidate = false;
 
-  TextEditingController _nombreController = TextEditingController();
-  TextEditingController _edadController = TextEditingController();
   TextEditingController _pesoController = TextEditingController();
   TextEditingController _alturaController = TextEditingController();
-  TextEditingController _fechaController = TextEditingController();
 
   //obtenemos la fecha del sistema
   var now = DateTime.now().toUtc().toLocal();
@@ -41,22 +38,17 @@ class _TestNutritionalState extends State<TestNutritional>
   @override
   void initState() {
     super.initState();
-    _nombreController = TextEditingController();
-    _edadController = TextEditingController();
+
     _pesoController = TextEditingController();
     _alturaController = TextEditingController();
-    _fechaController =
-        TextEditingController(text: formatDate(now, [d, '-', M, '-', yyyy]));
+
   }
 
   @override
   void dispose() {
     super.dispose();
-    _nombreController.dispose();
-    _edadController.dispose();
     _pesoController.dispose();
     _alturaController.dispose();
-    _fechaController.dispose();
   }
 
   //metodo para la barra de progreso
@@ -164,7 +156,7 @@ class _TestNutritionalState extends State<TestNutritional>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     _nombre(),
-                                    SizedBox(height: 10.0),
+                                    SizedBox(height: 5.0),
                                     _edad(),
                                     SizedBox(height: 10.0),
                                     _pesoTexField(),
@@ -268,22 +260,19 @@ class _TestNutritionalState extends State<TestNutritional>
 
 //----------------------------- TextFiel para los datos del niño ---------------------
   Widget _nombre() {
-    return AppTextField(
-      focusNode: _focusNode,
-      controller: _nombreController,
-      autoValidate: _autovalidate,
-      inputText: "Nombre del niñ@",
+    return Text(
+      widget.nombre,
+      style: TextStyle( fontWeight: FontWeight.bold, fontSize: 20),
     );
+    
   }
 
   Widget _edad() {
-    return AppTextField(
-      controller: _edadController,
-      validator: validateAge,
-      autoValidate: _autovalidate,
-      inputText: "Edad en meses",
-      textInputType: TextInputType.number,
+    return Text(
+      widget.edad + " Meses",
+      style: TextStyle( fontWeight: FontWeight.bold),
     );
+    
   }
 
   Widget _pesoTexField() {
@@ -306,12 +295,10 @@ class _TestNutritionalState extends State<TestNutritional>
     );
   }
 
-  Widget _fecha() {
-    return AppTextField(
-      controller: _fechaController,
-      autoValidate: _autovalidate,
-      inputText: "Ingrese fecha",
-      textInputType: TextInputType.datetime,
+  Widget _fecha() {   
+    return Text(
+       formatDate(now, [d, '-', M, '-', yyyy]),
+      style: TextStyle( fontWeight: FontWeight.bold, fontSize: 18),
     );
   }
 
@@ -324,11 +311,9 @@ class _TestNutritionalState extends State<TestNutritional>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ResultTest(
-                        idChild: "2mOt1sWQBNVzLhGOznon",
-                        edad: "26",
-                        peso: "20",
-                        altura: "88",
+                  builder: (context) => ResultTest(                      
+                        peso: _pesoController.text,
+                        altura: _alturaController.text,
                       )));
         } else {
           ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate

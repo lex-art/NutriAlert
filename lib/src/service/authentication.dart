@@ -32,8 +32,8 @@ class Authentication {
     //si no hay un resultado enviamos null
     return authRequest;
   }
-
   ///ahora hacemos lo mismo para la sesion del usuario
+
 //------------------------- Metodo para obtener los datos del usuario ----------------------
   // ignore: deprecated_member_use
   ///ahora hacemos lo mismo para la sesion del usuario
@@ -45,7 +45,6 @@ class Authentication {
     }
     return null;
   }
-
   ///----------------------- metodo para loguear al usuario --------------------------------
   Future<AuthenticationRequest> loginUser(
       {String email, String password}) async {

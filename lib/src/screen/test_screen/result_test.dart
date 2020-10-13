@@ -1,3 +1,4 @@
+import 'package:NutriAlert/src/algoritmos/proxima_cita.dart';
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
@@ -5,15 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
 
+// ignore: must_be_immutable
 class ResultTest extends StatefulWidget {
   final String idChild;
   final String edad;
   final String peso;
   final String altura;
   String trata;
-
-  //nombre de la ruta
-  static const String routName = "/result";
 
 //---------------- Constructor de  este widget que son los datos del niño -----------------------------
   ResultTest({this.idChild, this.edad, this.peso, this.altura});
@@ -31,7 +30,6 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   TextEditingController _zde3a5Controller = TextEditingController();
   TextEditingController _trataController = TextEditingController();
 
-  String _errorMessage = "";
   bool showSpinner = false;
   //un global key permite referenciar a un formulario y desde él tener accesos al estado de un textFormfield
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -57,7 +55,6 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
     _trataController.dispose();
   }
 
-  DateTime _dateTime;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,39 +131,23 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                         _puntuacionZ3a5(),
                         SizedBox(height: 10.0),
                         Text(
-                          "Proxima cita",
+                          "Proxima evaluación:",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
-                            fontSize: 12,
+                            fontSize: 18,
                           ),
                         ),
-                        IconButton(
-                          color: Colors.blueAccent,
-                          icon: Icon(
-                            Icons.date_range,
-                            color: Colors.white,
-                            size: 40,
-                          ),
-                          onPressed: () {
-                            showDatePicker(
-                                    context: context,
-                                    initialDate: _dateTime == null
-                                        ? DateTime.now().toUtc().toLocal()
-                                        : _dateTime,
-                                    firstDate: DateTime(2010),
-                                    lastDate: DateTime(2050))
-                                .then((date) {
-                              setState(() {
-                                _dateTime = date;
-                                print(_dateTime);
-                              });
-                            });
-                          },
+                        SizedBox(height: 5.0),
+                        Text(
+                          CalculateDate().proximaCita(widget.edad),
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 24),
                         ),
 
                         /// _cita(),
-                        SizedBox(height: 5.0),
+                        SizedBox(height: 10.0),
                         Text(
                           "Basado en Estándares de crecimiento de la OMS 2006 ",
                           style: TextStyle(
@@ -253,24 +234,35 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
         if (_formkey.currentState.validate()) {
           String id = widget.idChild;
 
-          // ChildService().saveStoryChild(
-          //     collectionName: "niños/$id/historial",
-          //     collectionValues: {
-          //       'edad': widget.edad,
-          //       'estado': 'Normal',
-          //       'fecha': _dateTime.toString(),
-          //       'longitud': widget.altura,
-          //       'longitudEdad': _longitudEdadController.text,
-          //       'peso': widget.peso,
-          //       'pesoEdad': _pesoEdadController.text,
-          //       'proximaCita': '12-10-20',
-          //       'tratamiento': _trataController.text,
-          //       'z2ages': '-1',
-          //       'z5ages': '-111111',
-          //     });
-          //Navigator.of(context).push(MaterialPageRoute<Null>(
-          //builder: (BuildContext context) => StoryChild(id)));
-          //Navigator.pushNamed(context, '/nutriAlert');
+          var saveStory = await ChildService().saveStorychild(
+              collectionName: "niños/$id/historial",
+              collectionValues: {
+                'edad': widget.edad,
+                'estado': 'Normal',
+                'fecha': CalculateDate().fechaActual(),
+                'longitud': widget.altura,
+                'longitudEdad': _longitudEdadController.text,
+                'peso': widget.peso,
+                'pesoEdad': _pesoEdadController.text,
+                'proximaCita': CalculateDate().proximaCita(widget.edad),
+                'tratamiento': _trataController.text,
+                'z2ages': '-1',
+                'z5ages': '-111111',
+              });
+          if (saveStory.success) {
+            var update = await ChildService().updateRecordChild(
+                collectionName: "niños",
+                id: id,
+                collectionValues: {
+                  'estado': "Normal",
+                  'proxCita': CalculateDate().proximaCita(widget.edad),
+                });
+            if (update.success) {
+              Navigator.of(context).push(MaterialPageRoute<Null>(
+              builder: (BuildContext context) => StoryChild(id)));
+              Navigator.pushNamed(context, '/nutriAlert');
+            }
+          }
           _pesoEdadController.text = "";
           _longitudEdadController.text = "";
           _zde0a2Controller.text = "";

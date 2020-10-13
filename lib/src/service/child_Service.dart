@@ -6,9 +6,9 @@ class ChildService {
   // ignore: deprecated_member_use
   final _fireStore = Firestore.instance;
 //------------------------------- funcion para registrar un niño nuevo ------------------------------------
-  Future<RegisterChildRequest> saveChild(
+  Future<ChildRequest> saveChild(
       {String collectionName, Map<String, dynamic> collectionValues}) async {
-    RegisterChildRequest childRequest = RegisterChildRequest();
+    ChildRequest childRequest = ChildRequest();
     try {
       var child =
           await _fireStore.collection(collectionName).add(collectionValues);
@@ -40,36 +40,80 @@ class ChildService {
   }
 
 //---------------------------- metodo para Actualizar el registro del niño ----------------------------------
-  void updateRecordChild(
+  Future<ChildRequest> updateRecordChild(
       {String collectionName,
       String id,
       Map<String, dynamic> collectionValues}) async {
-    // ignore: deprecated_member_use
-    return _fireStore
-        .collection(collectionName)
-        .doc(id)
-        .update(collectionValues);
-    //collection("niños").doc(id).collection("historial").get()
+    ChildRequest childRequest = ChildRequest();
+
+    print(collectionName);
+    print(id);
+
+    try {
+      await _fireStore
+          .collection(collectionName)
+          .doc(id)
+          .update(collectionValues);
+      //collection("niños").doc(id).collection("historial").get()
+      childRequest.success = true;
+    } catch (e) {
+      _mapErrorMessage(childRequest, e.code);
+    }
+    return childRequest;
   }
 
-//------------------- suscripcion (con snapshot) a firestore para que nos envien automaticamente los msj ----------
+//---------------------------- metodo para Actualizar el registro del niño ----------------------------------
+// void updateRecordChild2(
+//     {String collectionName,
+//     String id,
+//     Map<String, dynamic> collectionValues}) async {
+//   // ignore: deprecated_member_use
+//   await _fireStore
+//       .collection(collectionName)
+//       .doc(id)
+//       .update(collectionValues);
+//   //collection("niños").doc(id).collection("historial").get()
+// }
+
+//------------ suscripcion (con snapshot) a firestore para que nos envie el historial del niño automaticamente ----------
   Stream<QuerySnapshot> getChildStoryStream(String id) {
     return _fireStore.collection("niños/$id/historial").snapshots();
   }
 
 //-------------------------------- Método para eliminar un registro de un niño ----------------------------
-  Future deleteChild(String collectionName, String id) {
-    return _fireStore.collection(collectionName).doc(id).delete();
+  Future<ChildRequest> deleteChild({String collectionName, String id}) async {
+    ChildRequest childRequest = ChildRequest();
+    try {
+      await _fireStore.collection(collectionName).doc(id).delete();
+      childRequest.success = true;
+    } catch (e) {
+      _mapErrorMessage(childRequest, e.code);
+    }
+    return childRequest;
   }
 
 //------------------------------- funcion para guardar elhistorial del niño --------------------------------
-  void saveStoryChild(
-      {String collectionName, Map<String, dynamic> collectionValues}) {
-    _fireStore.collection(collectionName).add(collectionValues);
+  // void saveStoryChild(
+  //     {String collectionName, Map<String, dynamic> collectionValues}) {
+  //   _fireStore.collection(collectionName).add(collectionValues);
+  // }
+  Future<ChildRequest> saveStorychild(
+      {String collectionName, Map<String, dynamic> collectionValues}) async {
+    ChildRequest childRequest = ChildRequest();
+    try {
+      var child =
+          await _fireStore.collection(collectionName).add(collectionValues);
+      if (child != null) {
+        childRequest.success = true;
+      }
+    } catch (e) {
+      _mapErrorMessage(childRequest, e.code);
+    }
+    return childRequest;
   }
 
   //para el manejo de errores (mapero de errores) de firebase
-  void _mapErrorMessage(RegisterChildRequest childRequest, String code) {
+  void _mapErrorMessage(ChildRequest childRequest, String code) {
     //code es el msj de errorde
     //firebase y la tenemos que mapear
     switch (code) {
@@ -79,6 +123,9 @@ class ChildService {
       case 'error-object-not-found':
         childRequest.errorMenssage =
             "No existe ningún objeto en la referencia deseada.";
+        break;
+      case 'not-found':
+        childRequest.errorMenssage = "No encontrado.";
         break;
       default:
         childRequest.errorMenssage = code;

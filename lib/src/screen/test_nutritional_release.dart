@@ -1,19 +1,21 @@
+import 'package:NutriAlert/src/algoritmos/proxima_cita.dart';
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/screen/second_screen/result_test_release.dart';
+import 'package:NutriAlert/src/widgets/app_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_flatButton.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
 
-class TestNutritional extends StatefulWidget {
+class TestNutritionalRelease extends StatefulWidget {
   //nombre de la ruta
   static const String routName = "/test";
   @override
-  _TestNutritionalState createState() => _TestNutritionalState();
+  _TestNutritionalStateRelease createState() => _TestNutritionalStateRelease();
 }
 
-class _TestNutritionalState extends State<TestNutritional>
+class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
     with ValidationChildMixins {
   bool showSpinner = false;
   FocusNode _focusNode;
@@ -23,7 +25,9 @@ class _TestNutritionalState extends State<TestNutritional>
 
   //seteamos el autovalidate
   bool _autovalidate = false;
-
+  String _errorMessage = "";
+  var _genero = ["Masculino", "Femenino"];
+  String _selectGenero = "Seleccione una opción";
 
   TextEditingController _nombreController = TextEditingController();
   TextEditingController _edadController = TextEditingController();
@@ -164,6 +168,36 @@ class _TestNutritionalState extends State<TestNutritional>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     _nombre(),
+                                    SizedBox(height: 10.0),
+                                    Material(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      child: Container(
+                                        padding: EdgeInsets.all(10),
+                                        height: 35,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            DropdownButton(
+                                              items: _genero.map((String a) {
+                                                return DropdownMenuItem(
+                                                    value: a, child: Text(a));
+                                              }).toList(),
+                                              onChanged: (_value) => {
+                                                setState(() {
+                                                  _selectGenero = _value;
+                                                }),
+                                              },
+                                              hint: Text(_selectGenero),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    _showErrorMessage(),
                                     SizedBox(height: 10.0),
                                     _edad(),
                                     SizedBox(height: 10.0),
@@ -307,11 +341,9 @@ class _TestNutritionalState extends State<TestNutritional>
   }
 
   Widget _fecha() {
-    return AppTextField(
-      controller: _fechaController,
-      autoValidate: _autovalidate,
-      inputText: "Ingrese fecha",
-      textInputType: TextInputType.datetime,
+    return Text(
+      CalculateDate().fechaActual(),
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
     );
   }
 
@@ -320,24 +352,40 @@ class _TestNutritionalState extends State<TestNutritional>
       nombre: "Evaluar",
       color: Colors.blueAccent,
       onPressed: () {
-        if (_formkey.currentState.validate()) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ResultTest(
-                        idChild: "2mOt1sWQBNVzLhGOznon",
-                        edad: "26",
-                        peso: "20",
-                        altura: "88",
-                      )));
+        if (_selectGenero == "Seleccione una opción") {
+          setState(() {
+            _errorMessage =
+                "Seleccione un género correcto";
+            _showErrorMessage();
+          });
         } else {
-          ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
-          ///en false para pasarlo a true
-          setState(() => _autovalidate = true);
+          if (_formkey.currentState.validate()) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ResultTestRelease(
+                          edad: _edadController.text,
+                          peso: _pesoController.text,
+                          altura: _alturaController.text,
+                        )));
+          } else {
+            ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
+            ///en false para pasarlo a true
+            setState(() => _autovalidate = true);
+          }
         }
 
         //Navigator.pushNamed(context, '/result');
       },
     );
+  }
+
+  //un widget para mostrar el error de firebase
+  Widget _showErrorMessage() {
+    if (_errorMessage.length > 0 && _errorMessage != null) {
+      return ErrorMessage(errorMessage: _errorMessage);
+    } else {
+      return Container(height: 0.0);
+    }
   }
 }
