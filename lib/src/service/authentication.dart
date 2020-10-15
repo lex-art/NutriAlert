@@ -2,8 +2,8 @@ import 'package:NutriAlert/src/models/auth_request.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Authentication {
-  //para poder usar firebase tenemos que declara una instancia para poder utilizarlo a nivel de nuestro codigo
-  ///instance creau un nuevo objeto, pero lo crea a travez de un singelton, lo que hace es que crea una
+  //para poder usar firebase tenemos que declarar una instancia para poder utilizarlo a nivel de nuestro codigo
+  ///instance crea un nuevo objeto, pero lo crea a travez de un singelton, lo que hace es que crea una,
   ///solamente una instancia de un objeto y no la crea cada vez que se llama un objeto, si no que solo una vez se crea para
   ///varios objetos  y queda disponoble para toda la app
   final _auth = FirebaseAuth.instance;
@@ -11,19 +11,19 @@ class Authentication {
   // pasamos los parametros , sera de tipo asyncrono e importamos la lib de firebas
   Future<AuthenticationRequest> createUser(
       {String email , String password }) async {
-    //hacemos a crear una instancia de AuthenticationRequest
+    //creamos una instancia de AuthenticationRequest, Devuelve true si la creación de usuario fue exitosa
     AuthenticationRequest authRequest = AuthenticationRequest();
-    //por si hay un error lo envolvemos priumero en yn try catch
+    //por si hay un error lo envolvemos priumero en un try catch
     try {
-      ///aqui enviaremos esos valores a firebase para registrar un usuario
-      ///llamadas asincronas lo vere despues, await quiere decir que nosotros de alguna manera esta llamando esta funcionalidad,
-      ///pero no esta deteniendo la app, no esta dejando al usuario congelado, por decilo esta trabajando en sefundo plano
-      ///Todas la llamades en firebnase deben ser asyncronas
-      ///retornamos asi el consumidor puede hacer lo que quiera
+      ///aqui enviaremos los valores a firebase para registrar un usuario
+      ///await quiere decir que nosotros de alguna manera esta llamando esta funcionalidad,
+      ///pero no esta deteniendo la app, no esta dejando al usuario congelado, por decilo esta
+      ///trabajando en segundo plano. Todas la llamadas en firebnase deben ser asyncronas,
+      /// retornamos asi el consumidor puede hacer lo que quiera
       var user = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (user != null) {
-        //si el usuario fue logueado exitosamente
+        //si el usuario fue creado exitosamente
         authRequest.success = true;
       }
     } catch (e) {

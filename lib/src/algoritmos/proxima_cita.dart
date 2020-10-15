@@ -6,7 +6,7 @@ class CalculateDate {
     var now = DateTime.now().toUtc().toLocal();
     String proxCita = "Finalizo su seguimiento";
 
-    if (edad > 0 && edad < 24) {
+    if (edad >= 0 && edad < 24) {
       now = now.add(Duration(days: 30));
       //convertimos el mes a español
       String mes = month(formatDate(now, [M]));

@@ -26,6 +26,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
   //seteamos el autovalidate
   bool _autovalidate = false;
   String _errorMessage = "";
+  
   var _genero = ["Masculino", "Femenino"];
   String _selectGenero = "Seleccione una opción";
 
@@ -307,6 +308,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
       controller: _nombreController,
       autoValidate: _autovalidate,
       inputText: "Nombre del niñ@",
+      
     );
   }
 
@@ -367,6 +369,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
                           edad: _edadController.text,
                           peso: _pesoController.text,
                           altura: _alturaController.text,
+                          genero: _selectGenero,
                         )));
           } else {
             ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
