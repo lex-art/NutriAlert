@@ -29,16 +29,17 @@ class TestNutritionalBoy {
     double zScore;
     double median;
     double standardDeviation;
-    //a partir del segundo año hay un pequeño cambio en los calculos por eso el if
-    //antes de los 24 meses, porque son otros valores
+    //* NOTA: es longitud y se usa otra tabla para niños menores a dos años y
+    // Talla / Estatura para niños mayores a 3 años y se usa otra tabla
     if (edad < 24) {
       // posicion 0  = mediana  y posiscion 1 = Desviacion Estandar(DS)
-      median = StandardsBoy().lengthForAgeBirthTo2YearsMedianDS(edad)[0];
-      standardDeviation =
-          StandardsBoy().lengthForAgeBirthTo2YearsMedianDS(edad)[1];
+      var standardBoy = StandardsBoy().lengthForAgeBirthTo2YearsMedianDS(edad);
+      median = standardBoy[0];
+      standardDeviation = standardBoy[1];
     } else {
-      median = StandardsBoy().lengthForAge2To5YearsMedianDS(edad)[0];
-      standardDeviation = StandardsBoy().lengthForAge2To5YearsMedianDS(edad)[1];
+      var standardBoy = StandardsBoy().lengthForAge2To5YearsMedianDS(edad);
+      median = standardBoy[0];
+      standardDeviation = standardBoy[1];
     }
     //Formula descrita anteriormente
     zScore = (longitud - median) / standardDeviation;
@@ -53,7 +54,7 @@ class TestNutritionalBoy {
 
     Los puntajes Z pueden calcularse a partir de los parámetros de LMS comparando la medida
     del niño con el tamaño mediano para esa edad y dividiendo el resultado por la desviación 
-    estándar. La inclusión del parámetro L en el cálculo (z = (((peso / M )^L) − 1 )/ ( L / S )) 
+    estándar. La inclusión del parámetro L en el cálculo (z = (((peso / M )^L) − 1 )/ ( L * S )) 
     tiene en cuenta cualquier sesgo en la referencia de crecimiento (Cole, 1989).
 
     SE TOMA LAS REFERENCIAS DE LA MEDIANA Y LMS  SEGUN ESTANDARES DE LA OMS:
@@ -62,9 +63,10 @@ class TestNutritionalBoy {
     */
     double zScore;
     //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
-    double lambda = StandardsBoy().weigthForAgeBoy(edad)[0];
-    double mediana = StandardsBoy().weigthForAgeBoy(edad)[1];
-    double sigma = StandardsBoy().weigthForAgeBoy(edad)[2];
+    var standardBoy = StandardsBoy().weigthForAgeBoy(edad);
+    double lambda = standardBoy[0];
+    double mediana = standardBoy[1];
+    double sigma = standardBoy[2];
 
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
 
@@ -76,17 +78,20 @@ class TestNutritionalBoy {
     double lambda;
     double mediana;
     double sigma;
+    var stadardoy;
 
-    ///se calcula peso para la longitud a niños menores de 2 años y
-    ///se calcula peso para la estatura, altura o talla a niños de 2 a 5 años
+    ///NOTA: se calcula peso para la longitud a niños menores de 2 años (24 meses) y
+    ///se calcula peso para la Estatura/Altura o talla a niños de 2 a 5 años
     if (edad < 24) {
-      lambda = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura)[0];
-      mediana = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura)[1];
-      sigma = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura)[2];
+      stadardoy = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura);
+      lambda = stadardoy[0];
+      mediana = stadardoy[1];
+      sigma = stadardoy[2];
     } else {
-      lambda = StandardsBoy().weightForHeight2To5YearsBOYSz(altura)[0];
-      mediana = StandardsBoy().weightForHeight2To5YearsBOYSz(altura)[1];
-      sigma = StandardsBoy().weightForHeight2To5YearsBOYSz(altura)[2];
+      stadardoy = StandardsBoy().weightForHeight2To5YearsBOYSz(altura);
+      lambda = stadardoy[0];
+      mediana =stadardoy[1];
+      sigma = stadardoy[2];
     }
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
     return zScore.toStringAsFixed(2);

@@ -1,3 +1,5 @@
+import 'package:NutriAlert/src/widgets/app_iconBoy.dart';
+import 'package:NutriAlert/src/widgets/app_iconGirl.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -62,9 +64,26 @@ class _ViewRecordChildState extends State<ViewRecordChild> {
           )),
       body: Container(
         child: Padding(
-          padding: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
+              widget.genero == "Masculino" ? AppBoy() : AppGirl(),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Cui: ",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  Text("${widget.cui}", style: TextStyle(fontSize: 20)),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -83,10 +102,11 @@ class _ViewRecordChildState extends State<ViewRecordChild> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Cui: ",
+                    "Género: ",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
-                  Text("${widget.cui}", style: TextStyle(fontSize: 20)),
+                  Text("${widget.genero} ",
+                      style: TextStyle(fontSize: 20)),
                 ],
               ),
               SizedBox(

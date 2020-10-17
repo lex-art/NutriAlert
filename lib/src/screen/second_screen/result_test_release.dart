@@ -1,4 +1,5 @@
 import 'package:NutriAlert/src/algoritmos/boy/testNutritionalBoy.dart';
+import 'package:NutriAlert/src/algoritmos/girl/testNutritionalGirl.dart';
 import 'package:NutriAlert/src/algoritmos/interpretar_resul.dart';
 import 'package:NutriAlert/src/algoritmos/proxima_cita.dart';
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
@@ -9,23 +10,18 @@ import 'package:flutter/material.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
 
-import '../nurtriAlert_app.dart';
-
 // ignore: must_be_immutable
 class ResultTestRelease extends StatefulWidget {
-  final String idChild;
   final String edad;
   final String peso;
   final String altura;
   final String genero;
-  String trata;
 
   //nombre de la ruta
   static const String routName = "/result";
 
 //---------------- Constructor de  este widget que son los datos del niño -----------------------------
-  ResultTestRelease(
-      {this.idChild, this.edad, this.peso, this.altura, this.genero});
+  ResultTestRelease({this.edad, this.peso, this.altura, this.genero});
 
   @override
   _ResultTestStateRelease createState() => _ResultTestStateRelease();
@@ -44,7 +40,7 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   //longitud/estatura para la edad
   String lengthHeightForAge = "";
-  //peso para la edad 
+  //peso para la edad
   String weigthForAgeBirdTo5Year = "";
   //longitud/Estatura para el peso
   String zScore = "";
@@ -61,21 +57,39 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
     altura = double.parse(widget.altura);
     peso = double.parse(widget.peso);
 
+//----------------------- verificamos que genero es para saber que tipo de evaluacion es el adecuado par ael niñ@ ---
     if (widget.genero == "Masculino") {
-     lengthHeightForAge =
+      lengthHeightForAge =
           TestNutritionalBoy().longitudEdadBirdTo2Year(edad, altura);
       weigthForAgeBirdTo5Year =
           TestNutritionalBoy().pesoEdadBirdTo5Year(edad, peso);
       //puntuacion z esta detecta si es menor a 2 años hace un examen diferente y si es de 2 a5 años, tambien hace otro examen
       zScore = TestNutritionalBoy().puntuacionZ(edad, altura2, peso);
     }
+    if (widget.genero == "Femenino") {
+      lengthHeightForAge =
+          TestNutritionalGirl().longitTallaParaEdadGirl(edad, altura);
+      weigthForAgeBirdTo5Year = TestNutritionalGirl().pesoEdad(edad, peso);
+      zScore = TestNutritionalGirl().puntuacionZ(edad, altura2, peso);
+    }
 
     setState(() {
-      _pesoEdadController =
-          TextEditingController(text: "z = " + weigthForAgeBirdTo5Year + ", " + Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
-      _longitudEdadController =
-          TextEditingController(text: "z = " + lengthHeightForAge +", " + Resultados().longitudTallaEdad(double.parse(lengthHeightForAge)));
-      _zScoreController = TextEditingController(text: "z = " + zScore +", " + Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
+      //----------------------------- Imprimimos los resultados en pantalla ---------------------------------
+      _pesoEdadController = TextEditingController(
+          text: "z = " +
+              weigthForAgeBirdTo5Year +
+              ", " +
+              Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
+      _longitudEdadController = TextEditingController(
+          text: "z = " +
+              lengthHeightForAge +
+              ", " +
+              Resultados().longitudTallaEdad(double.parse(lengthHeightForAge)));
+      _zScoreController = TextEditingController(
+          text: "z = " +
+              zScore +
+              ", " +
+              Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
     });
   }
 
@@ -128,15 +142,16 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
                         ),
                         SizedBox(height: 5.0),
                         Column(
-                          verticalDirection: VerticalDirection.down ,
+                          verticalDirection: VerticalDirection.down,
                           children: [
                             _pesoParaEdad(),
-                           
                           ],
                         ),
                         SizedBox(height: 10.0),
                         Text(
-                          "Longitud/Talla para la edad (0 a 5 años)",
+                          meses < 24
+                              ? "Longitud para la edad (Puntuación Z de 0 a 2 años)"
+                              : "Talla para la edad (Puntuación Z de 2 a 5 años)",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
@@ -148,8 +163,8 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
                         SizedBox(height: 10.0),
                         Text(
                           meses < 24
-                              ? "Pesos para la longitud (Puntuación Z de 0 a 2 años)"
-                              : "Pesos para la talla (Puntuación Z de 2 a 5 años)",
+                              ? "Peso para la longitud (Puntuación Z de 0 a 2 años)"
+                              : "Peso para la talla (Puntuación Z de 2 a 5 años)",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
@@ -175,7 +190,7 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
                               fontSize: 24),
                         ),
 
-                        /// _cita(),
+                        
                         SizedBox(height: 5.0),
                         Text(
                           "Basado en Estándares de crecimiento de la OMS 2006 ",
@@ -238,17 +253,11 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
       nombre: "Aceptar",
       color: Colors.blueAccent,
       onPressed: () {
-        if (_formkey.currentState.validate()) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => NutriAlert()),
-              (Route<dynamic> route) => false);
+        Navigator.pushNamed(context, '/nutriAlert');
 
-          _pesoEdadController.text = "";
-          _longitudEdadController.text = "";
-          _zScoreController.text = "";
-        } else {
-          setState(() => _autovalidate = true);
-        }
+        // Navigator.of(context).pushAndRemoveUntil(
+        //     MaterialPageRoute(builder: (context) => NutriAlert()),
+        //     (Route<dynamic> route) => false);
 
         //_pesoEdadController.dispose();
         //_longitudEdadController.dispose();

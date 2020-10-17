@@ -317,7 +317,7 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
       controller: _nameController,
       autoValidate: _autovalidate,
       validator: validateName,
-      inputText: "Nombre del niñ@",
+      inputText: "Nombre del niño(a)",
       onSaved: (value) {},
     );
   }
@@ -327,7 +327,7 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
       controller: _secondController,
       autoValidate: _autovalidate,
       validator: validateApe,
-      inputText: "Apellido del niñ@",
+      inputText: "Apellido del niño(a)",
       onSaved: (value) {},
     );
   }
@@ -365,7 +365,7 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
     return AppTextField(
       controller: _numberPhoneController,
       autoValidate: _autovalidate,
-      inputText: "Numero de teléfono",
+      inputText: "Número de teléfono",
       textInputType: TextInputType.number,
       onSaved: (value) {},
     );

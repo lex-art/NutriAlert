@@ -26,7 +26,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
   //seteamos el autovalidate
   bool _autovalidate = false;
   String _errorMessage = "";
-  
+
   var _genero = ["Masculino", "Femenino"];
   String _selectGenero = "Seleccione una opción";
 
@@ -168,8 +168,21 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    Text(
+                                      "Nombre del niño(a):",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
                                     _nombre(),
                                     SizedBox(height: 10.0),
+                                    Text(
+                                      "Seleccione el género del niño(a):",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
                                     Material(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(50.0),
@@ -192,7 +205,9 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
                                                   _selectGenero = _value;
                                                 }),
                                               },
-                                              hint: Text(_selectGenero),
+                                              hint: Text(_selectGenero,
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
                                             ),
                                           ],
                                         ),
@@ -200,10 +215,31 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
                                     ),
                                     _showErrorMessage(),
                                     SizedBox(height: 10.0),
+                                    Text(
+                                      "Edad del niño(a) en meses:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
                                     _edad(),
                                     SizedBox(height: 10.0),
+                                    Text(
+                                      "Peso del niño(a) en kg:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
                                     _pesoTexField(),
                                     SizedBox(height: 10.0),
+                                    Text(
+                                      "Longitud/Talla del niño(a) en cm:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
                                     _alturaTextField(),
                                     SizedBox(height: 10.0),
                                     _fecha(),
@@ -308,7 +344,6 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
       controller: _nombreController,
       autoValidate: _autovalidate,
       inputText: "Nombre del niñ@",
-      
     );
   }
 
@@ -327,7 +362,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
       controller: _pesoController,
       autoValidate: _autovalidate,
       validator: validateTest,
-      inputText: "Peso(Kg)",
+      inputText: "Peso(kg)",
       textInputType: TextInputType.number,
     );
   }
@@ -337,7 +372,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
       controller: _alturaController,
       autoValidate: _autovalidate,
       validator: validateTest,
-      inputText: "Longitud/Talla(Cm)",
+      inputText: "Longitud/Talla(cm)",
       textInputType: TextInputType.number,
     );
   }
@@ -356,8 +391,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
       onPressed: () {
         if (_selectGenero == "Seleccione una opción") {
           setState(() {
-            _errorMessage =
-                "Seleccione un género correcto";
+            _errorMessage = "Seleccione un género correcto";
             _showErrorMessage();
           });
         } else {

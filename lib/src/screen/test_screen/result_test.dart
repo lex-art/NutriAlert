@@ -1,7 +1,13 @@
+import 'package:NutriAlert/src/algoritmos/boy/testNutritionalBoy.dart';
+import 'package:NutriAlert/src/algoritmos/girl/testNutritionalGirl.dart';
+import 'package:NutriAlert/src/algoritmos/interpretar_resul.dart';
 import 'package:NutriAlert/src/algoritmos/proxima_cita.dart';
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
+import 'package:NutriAlert/src/widgets/app_iconAlert.dart';
+import 'package:NutriAlert/src/widgets/app_iconBoy.dart';
+import 'package:NutriAlert/src/widgets/app_iconGirl.dart';
 import 'package:flutter/material.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
@@ -12,10 +18,11 @@ class ResultTest extends StatefulWidget {
   final String edad;
   final String peso;
   final String altura;
+  final String genero;
   String trata;
 
 //---------------- Constructor de  este widget que son los datos del niño -----------------------------
-  ResultTest({this.idChild, this.edad, this.peso, this.altura});
+  ResultTest({this.idChild, this.genero, this.edad, this.peso, this.altura});
 
   @override
   _ResultTestState createState() => _ResultTestState();
@@ -26,22 +33,66 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
 
   TextEditingController _pesoEdadController = TextEditingController();
   TextEditingController _longitudEdadController = TextEditingController();
-  TextEditingController _zde0a2Controller = TextEditingController();
-  TextEditingController _zde3a5Controller = TextEditingController();
+  TextEditingController _zScoreController = TextEditingController();
+
   TextEditingController _trataController = TextEditingController();
 
   bool showSpinner = false;
   //un global key permite referenciar a un formulario y desde él tener accesos al estado de un textFormfield
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  //tipo de teclado
+  //longitud/estatura para la edad
+  String lengthHeightForAge = "";
+  //peso para la edad
+  String weigthForAgeBirdTo5Year = "";
+  //longitud/Estatura para el peso
+  String zScore = "";
+  int edad;
+  double altura;
+  double peso;
+  int altura2;
 
   @override
   void initState() {
     super.initState();
-    _pesoEdadController = TextEditingController();
-    _longitudEdadController = TextEditingController();
-    _zde0a2Controller = TextEditingController();
-    _zde3a5Controller = TextEditingController();
+    edad = int.parse(widget.edad);
+    altura2 = int.parse(widget.altura);
+    altura = double.parse(widget.altura);
+    peso = double.parse(widget.peso);
+
+    //----------------------- verificamos que genero es para saber que tipo de evaluacion es el adecuado par ael niñ@ ---
+    if (widget.genero == "Masculino") {
+      lengthHeightForAge =
+          TestNutritionalBoy().longitudEdadBirdTo2Year(edad, altura);
+      weigthForAgeBirdTo5Year =
+          TestNutritionalBoy().pesoEdadBirdTo5Year(edad, peso);
+      //puntuacion z esta detecta si es menor a 2 años hace un examen diferente y si es de 2 a5 años, tambien hace otro examen
+      zScore = TestNutritionalBoy().puntuacionZ(edad, altura2, peso);
+    }
+    if (widget.genero == "Femenino") {
+      lengthHeightForAge =
+          TestNutritionalGirl().longitTallaParaEdadGirl(edad, altura);
+      weigthForAgeBirdTo5Year = TestNutritionalGirl().pesoEdad(edad, peso);
+      zScore = TestNutritionalGirl().puntuacionZ(edad, altura2, peso);
+    }
+
+    setState(() {
+      //----------------------------- Imprimimos los resultados en pantalla ---------------------------------
+      _pesoEdadController = TextEditingController(
+          text: "z = " +
+              weigthForAgeBirdTo5Year +
+              ", " +
+              Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
+      _longitudEdadController = TextEditingController(
+          text: "z = " +
+              lengthHeightForAge +
+              ", " +
+              Resultados().longitudTallaEdad(double.parse(lengthHeightForAge)));
+      _zScoreController = TextEditingController(
+          text: "z = " +
+              zScore +
+              ", " +
+              Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
+    });
     _trataController = TextEditingController();
   }
 
@@ -50,13 +101,12 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
     super.dispose();
     _pesoEdadController.dispose();
     _longitudEdadController.dispose();
-    _zde0a2Controller.dispose();
-    _zde3a5Controller.dispose();
     _trataController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    int meses = int.parse(widget.edad);
     return Scaffold(
       appBar: AppBar(
           //color al botron de retroceso
@@ -75,12 +125,19 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
               key: _formkey,
               child: Column(
                 children: [
-                  Text(
-                    "Alerta",
-                    style: TextStyle(
-                        fontSize: 36,
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.normal),
+                  widget.genero == "Masculino" ? AppBoy() : AppGirl(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppIconAlert(),
+                      Text(
+                        " ${Resultados().pesoLongitudTallaZScore(double.parse(zScore))}",
+                        style: TextStyle(
+                            fontSize: 36,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 15, right: 15),
@@ -98,7 +155,9 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                         _pesoParaEdad(),
                         SizedBox(height: 10.0),
                         Text(
-                          "Longitud/Talla para la edad (0 a 5 años)",
+                          meses < 24
+                              ? "Longitud para la edad (Puntuación Z de 0 a 2 años)"
+                              : "Talla para la edad (Puntuación Z de 2 a 5 años)",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
@@ -109,7 +168,9 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                         _alturaParaEdad(),
                         SizedBox(height: 10.0),
                         Text(
-                          "Pesos para la longitud (Puntuación Z de 0 a 2 años)",
+                          meses < 24
+                              ? "Peso para la longitud (Puntuación Z de 0 a 2 años)"
+                              : "Peso para la talla (Puntuación Z de 2 a 5 años)",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.normal,
@@ -117,18 +178,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                           ),
                         ),
                         SizedBox(height: 5.0),
-                        _puntuacionZa2(),
-                        SizedBox(height: 10.0),
-                        Text(
-                          "Pesos para la longitud (Puntuación Z de 3 a 5 años)",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 12,
-                          ),
-                        ),
-                        SizedBox(height: 5.0),
-                        _puntuacionZ3a5(),
+                        _puntuacionZ(),
                         SizedBox(height: 10.0),
                         Text(
                           "Proxima evaluación:",
@@ -145,8 +195,6 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                               color: Theme.of(context).primaryColor,
                               fontSize: 24),
                         ),
-
-                        /// _cita(),
                         SizedBox(height: 10.0),
                         Text(
                           "Basado en Estándares de crecimiento de la OMS 2006 ",
@@ -181,7 +229,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   Widget _pesoParaEdad() {
     return AppTextField(
       autoValidate: _autovalidate,
-      validator: validateResult,
+      //validator: validateResult,
       controller: _pesoEdadController,
       textInputType: TextInputType.number,
       inputText: "Peso para la edad",
@@ -191,30 +239,23 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   Widget _alturaParaEdad() {
     return AppTextField(
       autoValidate: _autovalidate,
-      validator: validateResult,
+     // validator: validateResult,
       controller: _longitudEdadController,
       textInputType: TextInputType.number,
       inputText: "Altura para la edad",
     );
   }
 
-  Widget _puntuacionZa2() {
+  Widget _puntuacionZ() {
     return AppTextField(
-      controller: _zde0a2Controller,
-      validator: validateResult,
+      controller: _zScoreController,
+      //validator: validateResult,
       textInputType: TextInputType.number,
-      inputText: "Puntuación z de 0 a 2 años",
+      inputText: int.parse(widget.edad) < 24
+          ? "Puntuación Z de 0 a 2 años"
+          : "Puntuación Z de 2 a 5 años",
       autoValidate: _autovalidate,
-    );
-  }
-
-  Widget _puntuacionZ3a5() {
-    return AppTextField(
-      controller: _zde3a5Controller,
-      validator: validateResult,
-      textInputType: TextInputType.number,
-      inputText: "Puntuación z de 3 a 5 años",
-      autoValidate: _autovalidate,
+      onSaved: (value) {},
     );
   }
 
@@ -233,40 +274,49 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
       onPressed: () async {
         if (_formkey.currentState.validate()) {
           String id = widget.idChild;
-
+//---------------------- Guardamos el historial del niño ---------------------------------
           var saveStory = await ChildService().saveStorychild(
               collectionName: "niños/$id/historial",
               collectionValues: {
                 'edad': widget.edad,
-                'estado': 'Normal',
                 'fecha': CalculateDate().fechaActual(),
                 'longitud': widget.altura,
-                'longitudEdad': _longitudEdadController.text,
+                'longTallaEdad': lengthHeightForAge,
+                'estadoLongTalla': Resultados()
+                    .longitudTallaEdad(double.parse(lengthHeightForAge)),
                 'peso': widget.peso,
-                'pesoEdad': _pesoEdadController.text,
+                'pesoEdad': weigthForAgeBirdTo5Year,
+                'estadoPeso': Resultados()
+                    .pesoEdad(double.parse(weigthForAgeBirdTo5Year)),
                 'proximaCita': CalculateDate().proximaCita(widget.edad),
                 'tratamiento': _trataController.text,
-                'z2ages': '-1',
-                'z5ages': '-111111',
+                'z2ages': edad <= 24 ? zScore : "",
+                'z5ages': edad > 24 ? zScore : "",
+                'estadoZScore':
+                    Resultados().pesoLongitudTallaZScore(double.parse(zScore)),
               });
+          
+//----------------- ahora tenemos que actualizar el registro del niño --------------------
           if (saveStory.success) {
             var update = await ChildService().updateRecordChild(
                 collectionName: "niños",
                 id: id,
                 collectionValues: {
-                  'estado': "Normal",
+                  'edadMeses': widget.edad,
+                  'estado': Resultados()
+                      .pesoLongitudTallaZScore(double.parse(zScore)),
                   'proxCita': CalculateDate().proximaCita(widget.edad),
                 });
             if (update.success) {
               Navigator.of(context).push(MaterialPageRoute<Null>(
-              builder: (BuildContext context) => StoryChild(id)));
-              Navigator.pushNamed(context, '/nutriAlert');
+                  builder: (BuildContext context) => StoryChild(id)));
+              //Navigator.pushNamed(context, '/nutriAlert');
             }
           }
           _pesoEdadController.text = "";
           _longitudEdadController.text = "";
-          _zde0a2Controller.text = "";
-          _zde3a5Controller.text = "";
+          _zScoreController.text = "";
+          _trataController.text = "";
         } else {
           setState(() => _autovalidate = true);
         }

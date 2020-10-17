@@ -165,19 +165,22 @@ class _StoryChildState extends State<StoryChild> {
   Future<void> alertResultado(String action) async {
     if (action == "yes") {
       var resul = await ChildService()
-          .deleteChild(collectionName: 'niños', id: widget.id);
+          .deleteStoryChild(collectionName: 'niños', id: widget.id);
 
       if (resul.success) {
-       Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => NutriAlert()),
-                (Route<dynamic> route) => false);
+        var resul2 = await ChildService()
+            .deleteChild(collectionName: 'niños', id: widget.id);
+        if (resul2.success) {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => NutriAlert()),
+              (Route<dynamic> route) => false);
+        }
       }
     }
     if (action == "no") {
       Navigator.pop(context);
       // Navigator.pushNamed(context, "/nutriAlert");
     }
-    print("Tu seleccion es  $action");
   }
 
   //cuanbdo se presiona el boton se ejecuta essta funcion
@@ -259,18 +262,6 @@ class _StoryChildState extends State<StoryChild> {
                                               fontWeight: FontWeight.bold,
                                               color: Theme.of(context)
                                                   .accentColor))),
-                                  DataColumn(
-                                      label: Text("PesoEdad",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
-                                  DataColumn(
-                                      label: Text("PesoAltura",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .accentColor))),
                                 ], rows: _getRow(snapshot.data.documents)),
                           ],
                         ),
@@ -281,25 +272,25 @@ class _StoryChildState extends State<StoryChild> {
                             //sortColumnIndex: 0,
                             columns: [
                               DataColumn(
-                                  label: Text("Peso/Edad",
+                                  label: Text("Peso\nEdad",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
                                               Theme.of(context).accentColor))),
                               DataColumn(
-                                  label: Text("Talla/Edad",
+                                  label: Text("Estado",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
                                               Theme.of(context).accentColor))),
                               DataColumn(
-                                  label: Text("Z \n0-2",
+                                  label: Text("Talla/Long.\nEdad",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
                                               Theme.of(context).accentColor))),
                               DataColumn(
-                                  label: Text("Z \n3-5",
+                                  label: Text("Estado",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -312,7 +303,13 @@ class _StoryChildState extends State<StoryChild> {
                             //sortColumnIndex: 0,
                             columns: [
                               DataColumn(
-                                  label: Text("Tratamiento",
+                                  label: Text("Z\n0a2",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).accentColor))),
+                              DataColumn(
+                                  label: Text("Z\n2a5",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -330,6 +327,18 @@ class _StoryChildState extends State<StoryChild> {
                                           color:
                                               Theme.of(context).accentColor))),
                             ], rows: _getRow3(snapshot.data.documents)),
+                      ),
+                      SingleChildScrollView(
+                        child: DataTable(
+                            //sortColumnIndex: 0,
+                            columns: [
+                              DataColumn(
+                                  label: Text("Tratamiento",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                              Theme.of(context).accentColor))),
+                            ], rows: _getRow4(snapshot.data.documents)),
                       )
                     ]);
                   } else {
@@ -358,8 +367,6 @@ class _StoryChildState extends State<StoryChild> {
       DataCell(Text("$edad Meses")),
       DataCell(Text("$peso kg")),
       DataCell(Text("$talla cm")),
-      DataCell(Text("$talla cm")),
-      DataCell(Text("$talla cm")),
       //DataRow(cells: [DataCell(Text("help")),
     ]);
   }
@@ -369,10 +376,11 @@ class _StoryChildState extends State<StoryChild> {
     List<DataRow> storyChild = [];
     for (var story in storys) {
       storyChild.add(buildDataRow2(
-          story.data()["pesoEdad"],
-          story.data()["longitudEdad"],
-          story.data()["z2ages"],
-          story.data()["z5ages"]));
+        story.data()["pesoEdad"],
+        story.data()["estadoPeso"],
+        story.data()["longTallaEdad"],
+        story.data()["estadoLongTalla"],
+      ));
     }
     return storyChild;
   }
@@ -380,12 +388,17 @@ class _StoryChildState extends State<StoryChild> {
   //-------------------------------- Llenamos los datos para cada fial de la SEGUNDA página ----------------------
   //z2  = puntuacion z de 0 a dos años y z5 puntutaicon Z de 3 a 5 años
   DataRow buildDataRow2(
-      String pesoEdad, String tallaEedad, String z2, String z5) {
+    String pesoEdad,
+    String estadoPeso,
+    String longTallaEdad,
+    String estadoLongTalla,
+  ) {
     return DataRow(cells: [
       DataCell(Text(pesoEdad)),
-      DataCell(Text(tallaEedad)),
-      DataCell(Text(z2)),
-      DataCell(Text(z5)),
+      DataCell(Text(estadoPeso)),
+      DataCell(Text(longTallaEdad)),
+      DataCell(Text(estadoLongTalla)),
+
       //DataRow(cells: [DataCell(Text("help")),
     ]);
   }
@@ -394,27 +407,46 @@ class _StoryChildState extends State<StoryChild> {
   List<DataRow> _getRow3(dynamic storys) {
     List<DataRow> storyChild = [];
     for (var story in storys) {
-      storyChild.add(buildDataRow3(story.data()["tratamiento"],
-          story.data()["estado"], story.data()["proximaCita"]));
+      storyChild.add(buildDataRow3(
+          story.data()["z2ages"],
+          story.data()["z5ages"],
+          story.data()["estadoZScore"],
+          story.data()["proximaCita"]));
     }
     return storyChild;
   }
 
 //-------------------------------- Llenamos los datos para cada fial de la TERCERA página ----------------------
-  DataRow buildDataRow3(String trata, String estado, String proxCita) {
+  DataRow buildDataRow3(
+      String z0a2, String z2a5, String estado, String proxCita) {
     return DataRow(cells: [
-      DataCell(Text(trata)),
+      DataCell(Text(z0a2)),
+      DataCell(Text(z2a5)),
       DataCell(Text(
         estado,
         style: TextStyle(
-          color: estado == "Grave"
-              ? Colors.red
-              : estado == "Moderado" ? Colors.orange : Colors.green,
+          color: estado == "Normal" ? Colors.green : Colors.red,
           fontWeight: FontWeight.bold,
         ),
       )),
       DataCell(Text(proxCita)),
       //DataRow(cells: [DataCell(Text("help")),
+    ]);
+  }
+
+  //------------------------------- Mapeamos en una lista los datos que nnos devuelve el snapshot ------------------
+  List<DataRow> _getRow4(dynamic storys) {
+    List<DataRow> storyChild = [];
+    for (var story in storys) {
+      storyChild.add(buildDataRow4(story.data()["tratamiento"]));
+    }
+    return storyChild;
+  }
+
+//-------------------------------- Llenamos los datos para cada fial de la CUARTA página ----------------------
+  DataRow buildDataRow4(String tratamiento) {
+    return DataRow(cells: [
+      DataCell(Text(tratamiento)),
     ]);
   }
 

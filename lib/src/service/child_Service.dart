@@ -21,16 +21,19 @@ class ChildService {
     return childRequest;
   }
 
-//-------------- suscripcion(con snapshot) a firestore para que nos envien automaticamente los msj ---------
+//-------------- suscripcion(con snapshot) a firestore para obtener los registros de los niños---------
   Stream<QuerySnapshot> getChildStream() {
-    return _fireStore.collection("niños").snapshots();
+    return _fireStore
+        .collection("niños")
+        .orderBy("fechaRegistro", descending: true)
+        .snapshots();
   }
 
 //---------------------------- metodo para obtener el historial del niño -----------------------------------
-  Future<QuerySnapshot> getStory(String id) async {
-    // ignore: deprecated_member_use
-    return await _fireStore.collection('niños/$id/historial').getDocuments();
-  }
+  // Future<QuerySnapshot> getStory(String id) async {
+  //   // ignore: deprecated_member_use
+  //   return await _fireStore.collection('niños/$id/historial').getDocuments();
+  // }
 
 //---------------------------- metodo para encontrar el registro del niño ----------------------------------
   Future<DocumentSnapshot> getRecordChild(String id) async {
@@ -45,10 +48,8 @@ class ChildService {
       String id,
       Map<String, dynamic> collectionValues}) async {
     ChildRequest childRequest = ChildRequest();
-
-    print(collectionName);
-    print(id);
-
+    //print(collectionName);
+    //print(id);
     try {
       await _fireStore
           .collection(collectionName)
@@ -77,7 +78,10 @@ class ChildService {
 
 //------------ suscripcion (con snapshot) a firestore para que nos envie el historial del niño automaticamente ----------
   Stream<QuerySnapshot> getChildStoryStream(String id) {
-    return _fireStore.collection("niños/$id/historial").snapshots();
+    return _fireStore
+        .collection("niños/$id/historial")
+        .orderBy("edad", descending: true)
+        .snapshots();
   }
 
 //-------------------------------- Método para eliminar un registro de un niño ----------------------------
@@ -85,6 +89,30 @@ class ChildService {
     ChildRequest childRequest = ChildRequest();
     try {
       await _fireStore.collection(collectionName).doc(id).delete();
+      childRequest.success = true;
+    } catch (e) {
+      _mapErrorMessage(childRequest, e.code);
+    }
+    return childRequest;
+  }
+
+  //-------------------------------- Método para eliminar las collecciones del hostorial----------------------------
+  Future<ChildRequest> deleteStoryChild(
+      {String collectionName, String id}) async {
+    ChildRequest childRequest = ChildRequest();
+    try {
+      final documentos = await _fireStore
+          .collection(collectionName)
+          .doc(id)
+          .collection('historial')
+          .get();
+      for (var item in documentos.docs) {      
+        _fireStore
+          .collection(collectionName)
+          .doc(id)
+          .collection('historial').doc(item.id).delete();
+      }
+
       childRequest.success = true;
     } catch (e) {
       _mapErrorMessage(childRequest, e.code);

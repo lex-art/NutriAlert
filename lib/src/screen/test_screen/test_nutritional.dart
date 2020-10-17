@@ -1,5 +1,6 @@
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/screen/test_screen/result_test.dart';
+import 'package:NutriAlert/src/widgets/app_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
@@ -8,7 +9,7 @@ import 'package:NutriAlert/src/widgets/app_textField.dart';
 
 class TestNutritional extends StatefulWidget {
   //parametros para iniciar el test
-  final String id, nombre, edad,  genero;
+  final String id, nombre, edad, genero;
   TestNutritional({this.id, this.nombre, this.edad, this.genero});
   @override
   _TestNutritionalState createState() => _TestNutritionalState();
@@ -24,7 +25,9 @@ class _TestNutritionalState extends State<TestNutritional>
 
   //seteamos el autovalidate
   bool _autovalidate = false;
+  String _errorMessage = "";
 
+  TextEditingController _edadController = TextEditingController();
   TextEditingController _pesoController = TextEditingController();
   TextEditingController _alturaController = TextEditingController();
 
@@ -38,17 +41,9 @@ class _TestNutritionalState extends State<TestNutritional>
   @override
   void initState() {
     super.initState();
-
+    _edadController = TextEditingController();
     _pesoController = TextEditingController();
     _alturaController = TextEditingController();
-
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pesoController.dispose();
-    _alturaController.dispose();
   }
 
   //metodo para la barra de progreso
@@ -156,11 +151,34 @@ class _TestNutritionalState extends State<TestNutritional>
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     _nombre(),
-                                    SizedBox(height: 5.0),
                                     _edad(),
                                     SizedBox(height: 10.0),
+                                    Text(
+                                      "Edad actual del niño(a):",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
+                                    _edadTexField(),
+                                    _showErrorMessage(),
+                                    SizedBox(height: 10.0),
+                                    Text(
+                                      "Peso del niño(a) en kg:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
                                     _pesoTexField(),
                                     SizedBox(height: 10.0),
+                                    Text(
+                                      "Longitud/Talla del niño(a) en cm:",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    SizedBox(height: 3.0),
                                     _alturaTextField(),
                                     SizedBox(height: 10.0),
                                     _fecha(),
@@ -262,17 +280,26 @@ class _TestNutritionalState extends State<TestNutritional>
   Widget _nombre() {
     return Text(
       widget.nombre,
-      style: TextStyle( fontWeight: FontWeight.bold, fontSize: 20),
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
     );
-    
   }
 
   Widget _edad() {
     return Text(
-      widget.edad + " Meses",
-      style: TextStyle( fontWeight: FontWeight.bold),
+      "Edad registrada: " + widget.edad + " Meses",
+      style: TextStyle(fontWeight: FontWeight.bold),
     );
-    
+  }
+
+  Widget _edadTexField() {
+    return AppTextField(
+      focusNode: _focusNode,
+      controller: _edadController,
+      autoValidate: _autovalidate,
+      validator: validateAge,
+      inputText: "Edad en Meses",
+      textInputType: TextInputType.number,
+    );
   }
 
   Widget _pesoTexField() {
@@ -295,10 +322,10 @@ class _TestNutritionalState extends State<TestNutritional>
     );
   }
 
-  Widget _fecha() {   
+  Widget _fecha() {
     return Text(
-       formatDate(now, [d, '-', M, '-', yyyy]),
-      style: TextStyle( fontWeight: FontWeight.bold, fontSize: 18),
+      formatDate(now, [d, '-', M, '-', yyyy]),
+      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
     );
   }
 
@@ -307,22 +334,41 @@ class _TestNutritionalState extends State<TestNutritional>
       nombre: "Evaluar",
       color: Colors.blueAccent,
       onPressed: () {
-        if (_formkey.currentState.validate()) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ResultTest(                      
-                        peso: _pesoController.text,
-                        altura: _alturaController.text,
-                      )));
-        } else {
-          ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
-          ///en false para pasarlo a true
-          setState(() => _autovalidate = true);
+        if (int.parse(_edadController.text) <= int.parse(widget.edad)) {
+          _errorMessage = "La edad no puede ser menor o igual a la actual";
+          setState(() {
+            _showErrorMessage();
+          });
+        } else {  
+          _errorMessage = "";        
+          if (_formkey.currentState.validate()) {  
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ResultTest(
+                          idChild: widget.id,
+                          genero: widget.genero,
+                          edad: _edadController.text,
+                          peso: _pesoController.text,
+                          altura: _alturaController.text,
+                        )));
+          } else {
+            ///si cambia el error debemos de re-renderizar la pantalla, para quitar el autrovalidate
+            ///en false para pasarlo a true
+            setState(() => _autovalidate = true);
+          }
         }
-
         //Navigator.pushNamed(context, '/result');
       },
     );
+  }
+
+  //un widget para mostrar el error de firebase
+  Widget _showErrorMessage() {
+    if (_errorMessage.length > 0 && _errorMessage != null) {
+      return ErrorMessage(errorMessage: _errorMessage);
+    } else {
+      return Container(height: 0.0);
+    }
   }
 }
