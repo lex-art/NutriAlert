@@ -25,10 +25,16 @@ class ChildService {
   Stream<QuerySnapshot> getChildStream() {
     return _fireStore
         .collection("niños")
-        .orderBy("fechaRegistro", descending: true)
+        .orderBy(
+          "fechaRegistro", /*descending: true*/
+        )
         .snapshots();
   }
-
+  
+//-------------- suscripcion(con snapshot) a firestore para obtener los registros de los niños para ver los registros---------
+  Stream<QuerySnapshot> getChildStreamRegistros() {
+    return _fireStore.collection("niños").orderBy("nombres").snapshots();
+  }
 //---------------------------- metodo para obtener el historial del niño -----------------------------------
   // Future<QuerySnapshot> getStory(String id) async {
   //   // ignore: deprecated_member_use
@@ -106,11 +112,13 @@ class ChildService {
           .doc(id)
           .collection('historial')
           .get();
-      for (var item in documentos.docs) {      
+      for (var item in documentos.docs) {
         _fireStore
-          .collection(collectionName)
-          .doc(id)
-          .collection('historial').doc(item.id).delete();
+            .collection(collectionName)
+            .doc(id)
+            .collection('historial')
+            .doc(item.id)
+            .delete();
       }
 
       childRequest.success = true;
