@@ -1,6 +1,5 @@
 import 'package:NutriAlert/src/mixins/validation_mixins.dart';
 import 'package:NutriAlert/src/service/authentication.dart';
-import 'package:NutriAlert/src/service/user_service.dart';
 import 'package:NutriAlert/src/widgets/app_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -92,8 +91,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
                       ],
                     ),
                   )),
-            ))
-            );
+            )));
   }
 
   //metodos para los inputs y botones
@@ -138,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
           //si es distinto a nul entonces el usuario existe
           if (auth.success) {
             //_getUser();
-            Navigator.pushNamed(context, '/nutriAlert');            
+            Navigator.pushNamed(context, '/nutriAlert');
             //aca lipiamos los textfield despues autenticarnos
             _emailController.text = "";
             _passwordController.text = "";
@@ -162,35 +160,35 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
   }
 
   //--------------------------- Metodo para obtener el usaurios en la bd -----------
-  void _getUser() async {
-    //obtner el id del usuaio
-    var user = await Authentication().getCurrentUser();
-    loggedInUser = user;
-    String idUser = loggedInUser.uid;
+  //void _getUser() async {
+  //  //obtner el id del usuaio
+  //  var user = await Authentication().getCurrentUser();
+  //  loggedInUser = user;
+  //  String idUser = loggedInUser.uid;
 
-    //todos los datos de la coleccion
-    final usuarios = await UserService().getUser();
-    for (var usuario in usuarios.docs) {
-      //print("-----------------------------------------${usuario.get("rol")}");
-      //verificamos que sea el mismo usuario
-      if (usuario.id == idUser) {
-        //si es el mismo usuairo, ahora vemos que rol tiene
-        if (usuario.get("rol") == "Administrador") {
-          print("aqui-------------------------------------");
-          //por ultimo lo redirigimos a la pagina que quiere
-          Navigator.pushNamed(context, '/nutriAlert');
-          break;
-        } else {
-          Navigator.pushNamed(context, '/record');
-          break;
-        }
-      } //else {
-        ///print("111-------" + idUser);
-        ///print("222-------" + usuario.id);
-       // print("Usuario no valido");
-      //}
-    }
-  }
+  //  //todos los datos de la coleccion
+  //  final usuarios = await UserService().getUsers();
+  //  for (var usuario in usuarios.docs) {
+  //    //print("-----------------------------------------${usuario.get("rol")}");
+  //    //verificamos que sea el mismo usuario
+  //    if (usuario.id == idUser) {
+  //      //si es el mismo usuairo, ahora vemos que rol tiene
+  //      if (usuario.get("rol") == "Administrador") {
+  //        print("aqui-------------------------------------");
+  //        //por ultimo lo redirigimos a la pagina que quiere
+  //        Navigator.pushNamed(context, '/nutriAlert');
+  //        break;
+  //      } else {
+  //        Navigator.pushNamed(context, '/record');
+  //        break;
+  //      }
+  //    } //else {
+  //      ///print("111-------" + idUser);
+  //      ///print("222-------" + usuario.id);
+  //     // print("Usuario no valido");
+  //    //}
+  //  }
+  //}
 
   //un widget para mostrar el error de firebase
   Widget _showErrorMessage() {

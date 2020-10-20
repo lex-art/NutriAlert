@@ -309,7 +309,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                 });
             if (update.success) {
               Navigator.of(context).push(MaterialPageRoute<Null>(
-                  builder: (BuildContext context) => StoryChild(id)));
+                  builder: (BuildContext context) => StoryChild(id: id, pantallaTest: true,)));
               //Navigator.pushNamed(context, '/nutriAlert');
             }
           }

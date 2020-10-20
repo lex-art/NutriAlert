@@ -3,5 +3,10 @@
     <!-- Flutter needs it to communicate with the running application
          to allow setting breakpoints, to provide hot reload, etc.
     -->
+    <!-- y agregamos estos 3 permisos que nos permitira la conxcion bluetooth -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  
+    
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

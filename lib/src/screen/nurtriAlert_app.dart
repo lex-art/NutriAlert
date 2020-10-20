@@ -2,7 +2,6 @@ import 'package:NutriAlert/src/service/authentication.dart';
 import 'package:NutriAlert/src/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:NutriAlert/src/widgets/app_cardMenu.dart';
-
 import 'login_screen.dart';
 
 class NutriAlert extends StatefulWidget {
@@ -30,7 +29,7 @@ class _NutriAlertState extends State<NutriAlert> {
     //le pasamos el usuriuo que trajimos de firebase y la asignamos la loggedInUdser
     if (user != null) {
       loggedInUser = user;
-      final usuarios = await UserService().getUser();
+      final usuarios = await UserService().getUsers();
       for (var usuario in usuarios.docs) {
         //print("-----------------------------------------${usuario.get("rol")}");
         //verificamos que sea el mismo usuario
@@ -38,8 +37,9 @@ class _NutriAlertState extends State<NutriAlert> {
           //si es el mismo usuairo, ahora vemos que rol tiene
           if (usuario.get("rol") == "Administrador") {
             //por ultimo lo redirigimos a la pagina que quiere
+            
             admin = true;
-            setState(() {
+            setState(() {              
               getDrawer(context);
             });
             break;

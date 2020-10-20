@@ -10,7 +10,7 @@ class Authentication {
   //para usar un metodo  en donde podamos crear un usuario y solo llamemos a este metodo  lo hacemos de la sig manera
   // pasamos los parametros , sera de tipo asyncrono e importamos la lib de firebas
   Future<AuthenticationRequest> createUser(
-      {String email , String password }) async {
+      {String email, String password}) async {
     //creamos una instancia de AuthenticationRequest, Devuelve true si la creación de usuario fue exitosa
     AuthenticationRequest authRequest = AuthenticationRequest();
     //por si hay un error lo envolvemos priumero en un try catch
@@ -32,6 +32,7 @@ class Authentication {
     //si no hay un resultado enviamos null
     return authRequest;
   }
+
   ///ahora hacemos lo mismo para la sesion del usuario
 
 //------------------------- Metodo para obtener los datos del usuario ----------------------
@@ -45,6 +46,7 @@ class Authentication {
     }
     return null;
   }
+
   ///----------------------- metodo para loguear al usuario --------------------------------
   Future<AuthenticationRequest> loginUser(
       {String email, String password}) async {
@@ -74,6 +76,51 @@ class Authentication {
     return null;
   }
 
+//------------------- funcion cambio de contraseña ---------------------------
+  Future<AuthenticationRequest> changePass({String email}) async {
+    //hacemos a crear una instancia de AuthenticationRequest
+    AuthenticationRequest authRequest = AuthenticationRequest();
+    try {
+      _auth.setLanguageCode(
+          'es'); //funcion de firebase para autenticacion del user
+      await _auth.sendPasswordResetEmail(email: email);
+      //await  _auth.currentUser.updatePassword(newPassword);
+
+    } catch (e) {
+      _mapErrorMessage(authRequest, e.code);
+    }
+    return authRequest;
+  }
+
+//-------------------- cambiar usuario y contraseña desde la app ---------------
+  Future<AuthenticationRequest> changeEmailPass(
+      {String email, String pass}) async {
+    //hacemos a crear una instancia de AuthenticationRequest
+    AuthenticationRequest authRequest = AuthenticationRequest();
+    try {
+      await _auth.currentUser.updateEmail(email);
+      await _auth.currentUser.updatePassword(pass);
+      authRequest.success = true;
+    } catch (e) {
+      _mapErrorMessage(authRequest, e.code);
+    }
+    return authRequest;
+  }
+
+  ///------------------ aliminar usuario ----------------------
+  ///Future<AuthenticationRequest> changeEmailPass(
+  Future<AuthenticationRequest> deleteUser() async {
+    //hacemos a crear una instancia de AuthenticationRequest
+    AuthenticationRequest authRequest = AuthenticationRequest();
+    try {
+      await _auth.currentUser.delete();
+      authRequest.success = true;
+    } catch (e) {
+      _mapErrorMessage(authRequest, e.code);
+    }
+    return authRequest;
+  }
+
   //para el manejo de errores (mapero de errores) de firebase
   void _mapErrorMessage(AuthenticationRequest authRequest, String code) {
     //code es el msj de errorde
@@ -99,6 +146,9 @@ class Authentication {
         break;
       case 'weak-password':
         authRequest.errorMenssage = "Su contraseña es muy débil";
+        break;
+      case 'requires-recent-login':
+        authRequest.errorMenssage = "Inicia sesión de neuvo";
         break;
 
       default:

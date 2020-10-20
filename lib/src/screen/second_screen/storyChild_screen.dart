@@ -9,9 +9,8 @@ class StoryChild extends StatefulWidget {
   //nombre de la ruta
   static const String routName = "/story";
   final String id;
-  StoryChild(
-    this.id,
-  );
+  bool pantallaTest;
+  StoryChild({this.id, this.pantallaTest});
 
   @override
   _StoryChildState createState() => _StoryChildState();
@@ -53,7 +52,7 @@ class _StoryChildState extends State<StoryChild> {
     noSector = child.data()["noSector"];
     padre = child.data()["padre"];
     pueblo = child.data()["pueblo"];
-    print(child.data());
+   // print(child.data());
   }
 
   @override
@@ -188,7 +187,7 @@ class _StoryChildState extends State<StoryChild> {
     //asi se crea un alert dialog classic esta en la documentacion, matarialcomponet hats a abajo
     AlertDialog dialog = AlertDialog(
       //contenido del dialog
-      content: Text(value, style: TextStyle(color: Colors.redAccent)),
+      content: Text(value, style: TextStyle(color: Colors.redAccent),textAlign: TextAlign.center),
       //puede aplicarse varias acciones del dialog con actions y esta recibe una lista de widgets
       actions: <Widget>[
         //flat buton es un boton parecido al de raisebuton
@@ -217,6 +216,16 @@ class _StoryChildState extends State<StoryChild> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          //------ cuando se guarde el test y lo lleve alregistro, y cuando quiera retroceder, esete no lo lleve 
+          // a la pantalla de evaluacion si no al menu principal
+            leading: widget.pantallaTest
+                ? IconButton(
+                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => NutriAlert()),
+                        (Route<dynamic> route) => false),
+                  )
+                : null,
             //pone de color blanco a todos los iconos del appBar
             iconTheme: IconThemeData(color: Colors.white),
             title: Text(
@@ -395,9 +404,15 @@ class _StoryChildState extends State<StoryChild> {
   ) {
     return DataRow(cells: [
       DataCell(Text(pesoEdad)),
-      DataCell(Text(estadoPeso)),
+      DataCell(Text(estadoPeso,style: TextStyle(
+          color: estadoPeso == "Peso Normal" ? Colors.green : Colors.red,
+          fontWeight: FontWeight.bold,
+        ),)),
       DataCell(Text(longTallaEdad)),
-      DataCell(Text(estadoLongTalla)),
+      DataCell(Text(estadoLongTalla, style: TextStyle(
+          color: estadoLongTalla == "Longitud/talla Normal" ? Colors.green : Colors.red,
+          fontWeight: FontWeight.bold,
+        ),),),
 
       //DataRow(cells: [DataCell(Text("help")),
     ]);

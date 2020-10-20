@@ -63,9 +63,9 @@ class _CreateUserState extends State<CreateUser> with ValidationMixins {
     });
   }
 
-  var _lista = ["Normal", "Administrador"];
+  var _lista = ["Evaluador", "Administrador"];
   //seleccion del rol
-  String _select = "Normal";
+  String _select = "Evaluador";
 
   @override
   Widget build(BuildContext context) {
@@ -94,30 +94,44 @@ class _CreateUserState extends State<CreateUser> with ValidationMixins {
                       size: 100,
                       color: Colors.blueAccent,
                     ),
+                    _textoTitulo('Ingrese su nombre'),
+                    SizedBox(height: 5.0),
                     _nombreField(),
                     SizedBox(
                       height: 10,
                     ),
+                    _textoTitulo('Ingrese su apellido'),
+                    SizedBox(height: 5.0),
                     _apellidosField(),
                     SizedBox(
                       height: 10,
                     ),
+                    _textoTitulo('Ingrese su número de teléfono'),
+                    SizedBox(height: 5.0),
                     _telfonoField(),
                     SizedBox(
                       height: 10,
                     ),
+                     _textoTitulo('Ingrese su DPI'),
+                    SizedBox(height: 5.0),
                     _dpiField(),
                     SizedBox(
                       height: 10,
                     ),
+                     _textoTitulo('Ingrese su correo electrónico'),
+                    SizedBox(height: 5.0),
                     _emailField(),
                     SizedBox(
                       height: 10,
                     ),
+                    _textoTitulo('Ingrese su contraseña'),
+                    SizedBox(height: 5.0),
                     _passwordField(),
                     SizedBox(
                       height: 10,
                     ),
+                    _textoTitulo('Seleccione el tipo de usuario'),
+                    SizedBox(height: 5.0),
                     Center(
                       child: DropdownButton(
                         items: _lista.map((String a) {
@@ -267,7 +281,12 @@ class _CreateUserState extends State<CreateUser> with ValidationMixins {
           }
         });
   }
-
+   Widget _textoTitulo(String titulo) {
+    return Text(
+      titulo,
+      style: TextStyle(color: Theme.of(context).accentColor),
+    );
+  }
   //un widget para mostrar el error de firebase
   Widget _showErrorMessage() {
     if (_errorMessage.length > 0 && _errorMessage != null) {

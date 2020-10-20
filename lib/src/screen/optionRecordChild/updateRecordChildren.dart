@@ -161,14 +161,24 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
                       child: Column(
                           //crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
+                            _textoTitulo('Ingrese CUI'),
+                            SizedBox(height: 5.0),
                             _cui(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Nombre del niño(a)'),
+                            SizedBox(height: 5.0),
                             _name(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Apellido del niño(a)'),
+                            SizedBox(height: 5.0),
                             _secondName(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Edad del niño(a) en meses'),
+                            SizedBox(height: 5.0),
                             _age(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Fecha de nacimiento'),
+                            SizedBox(height: 5.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -207,7 +217,9 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
                                 )
                               ],
                             ),
-                            SizedBox(height: 15.0),
+                            SizedBox(height: 3.0),
+                            _textoTitulo('Género del niño(a)'),
+                            SizedBox(height: 5.0),
                             Material(
                               color: Colors.white,
                               //elevation: 0,
@@ -242,18 +254,32 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
                               ),
                             ),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Nombre de la madre o responsable'),
+                            SizedBox(height: 5.0),
                             _nameMother(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Nombre del padre'),
+                            SizedBox(height: 5.0),
                             _nameFather(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Número de casa'),
+                            SizedBox(height: 5.0),
                             _numberHouse(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Número de teléfono'),
+                            SizedBox(height: 5.0),
                             _numberPhone(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Número de sector'),
+                            SizedBox(height: 5.0),
                             _numberSector(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Dirección del niño(a)'),
+                            SizedBox(height: 5.0),
                             _address(),
                             SizedBox(height: 15.0),
+                            _textoTitulo('Comunidad'),
+                            SizedBox(height: 5.0),
                             Material(
                               color: Colors.white,
                               //elevation: 0,
@@ -405,49 +431,50 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
       nombre: "Actualizar",
       onPressed: () async {
         if (_formkey.currentState.validate()) {
-         // print(widget.id);
+          // print(widget.id);
           //progress barpara inciarlo
           setSpinnerStatus(true);
           //aqui validamos  el usuario en firebase
-          var resul = await ChildService()
-              .updateRecordChild(collectionName: "niños", id: widget.id, collectionValues: {
-            "cui": _cuiController.text,
-            "nombres": _nameController.text,
-            "apellidos": _secondController.text,
-            "nacimiento": nacimiento == null
-                ? widget.nacimiento
-                : formatDate(nacimiento, [d, '-', M, '-', yyyy]),
-            "genero": _selectGenero,
-            "edadMeses": _ageController.text,
-            "madre": _nameMotherController.text,
-            "padre": _nameFatherController.text,
-            "noCasa": _numberHouseController.text,
-            "noCel": _numberPhoneController.text,
-            "noSector": _numberSectorController.text,
-            "direccion": _addressController.text,
-            "pueblo": _selectComunidad,
-          });
+          var resul = await ChildService().updateRecordChild(
+              collectionName: "niños",
+              id: widget.id,
+              collectionValues: {
+                "cui": _cuiController.text,
+                "nombres": _nameController.text,
+                "apellidos": _secondController.text,
+                "nacimiento": nacimiento == null
+                    ? widget.nacimiento
+                    : formatDate(nacimiento, [d, '-', M, '-', yyyy]),
+                "genero": _selectGenero,
+                "edadMeses": _ageController.text,
+                "madre": _nameMotherController.text,
+                "padre": _nameFatherController.text,
+                "noCasa": _numberHouseController.text,
+                "noCel": _numberPhoneController.text,
+                "noSector": _numberSectorController.text,
+                "direccion": _addressController.text,
+                "pueblo": _selectComunidad,
+              });
           //si es distinto a nul entonces el usuario existe
           if (resul.success) {
-          //si el logueo es exitosos entra aqui
-          Navigator.pushNamed(context, '/nutriAlert');
+            //si el logueo es exitosos entra aqui
+            Navigator.pushNamed(context, '/nutriAlert');
 
-          FocusScope.of(context).requestFocus(_focusNode);
-
-          _cuiController.text = "";
-          _nameController.text = "";
-          _secondController.text = "";
-          _ageController.text = "";
-          _birthController.text = "";
-          _nameMotherController.text = "";
-          _nameFatherController.text = "";
-          _numberHouseController.text = "";
-          _numberHouseController.text = "";
-          _numberPhoneController.text = "";
-          _numberSectorController.text = "";
-          _addressController.text = "";
+            FocusScope.of(context).requestFocus(_focusNode);
+            _cuiController.text = "";
+            _nameController.text = "";
+            _secondController.text = "";
+            _ageController.text = "";
+            _birthController.text = "";
+            _nameMotherController.text = "";
+            _nameFatherController.text = "";
+            _numberHouseController.text = "";
+            _numberHouseController.text = "";
+            _numberPhoneController.text = "";
+            _numberSectorController.text = "";
+            _addressController.text = "";
           } else {
-          //  //si no es exitoso entra en esta parte, donde muestra el error en un widget
+            //  //si no es exitoso entra en esta parte, donde muestra el error en un widget
             setState(() {
               _errorMessage = resul.errorMenssage;
             });
@@ -460,6 +487,13 @@ class _UpdateRegisterChildrenState extends State<UpdateRegisterChildren>
           setState(() => _autovalidate = true);
         }
       },
+    );
+  }
+
+  Widget _textoTitulo(String titulo) {
+    return Text(
+      titulo,
+      style: TextStyle(color: Colors.white),
     );
   }
 

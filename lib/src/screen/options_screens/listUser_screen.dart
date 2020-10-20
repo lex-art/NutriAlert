@@ -2,6 +2,8 @@ import 'package:NutriAlert/src/service/user_service.dart';
 
 import 'package:flutter/material.dart';
 
+import 'editUser.dart';
+
 class User extends StatefulWidget {
   //ruta pagina principal
   static const String routName = "/listUser";
@@ -55,6 +57,7 @@ class _UserState extends State<User> {
       final apellidoValue = user.data()["apellidos"];
       final telValue = user.data()["telefono"];
       final correoValue = user.data()["correo"];
+
       userItem.add(UserItem(
         nombre: nameValue,
         apellido: apellidoValue,
@@ -78,7 +81,7 @@ class UserItem extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 10, right: 8),
       child: Column(
-        children: [          
+        children: [
           ListTile(
             leading: CircleAvatar(
               child: Text(nombre[0].toUpperCase()),
@@ -111,10 +114,13 @@ class UserItem extends StatelessWidget {
               ),
             ),
             //cuando le da click lo lleva a otra pag
-            onTap:(){},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute<Null>(
+                  builder: (BuildContext context) => EditUser(correo: correo,)));
+            },
           ),
-           Divider(
-            height: 1.0,            
+          Divider(
+            height: 1.0,
             //thickness: 1,
             color: Colors.blueAccent,
           ),

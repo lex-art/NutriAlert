@@ -9,8 +9,6 @@ import 'package:NutriAlert/src/screen/record_child.dart';
 import 'package:NutriAlert/src/screen/register_child.dart';
 import 'package:NutriAlert/src/screen/test_nutritional_release.dart';
 import 'package:NutriAlert/src/screen/visits.dart';
-import 'package:NutriAlert/src/screen/second_screen/result_test_release.dart';
-import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/screen/options_screens/listUser_screen.dart';
 
 Future<void> main() async {

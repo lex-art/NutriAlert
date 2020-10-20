@@ -132,14 +132,24 @@ class _RegisterChildrenState extends State<RegisterChildren>
                         child: Column(
                             //crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
+                              _textoTitulo('Ingrese CUI'),
+                              SizedBox(height: 5.0),
                               _cui(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Nombre del niño(a)'),
+                              SizedBox(height: 5.0),
                               _name(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Apellido del niño(a)'),
+                              SizedBox(height: 5.0),
                               _secondName(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Edad del niño(a) en meses'),
+                              SizedBox(height: 5.0),
                               _age(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Fecha de nacimiento'),
+                              SizedBox(height: 5.0),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -178,7 +188,9 @@ class _RegisterChildrenState extends State<RegisterChildren>
                                   )
                                 ],
                               ),
-                              SizedBox(height: 15.0),
+                              SizedBox(height: 3.0),
+                              _textoTitulo('Género del niño(a)'),
+                              SizedBox(height: 5.0),
                               Material(
                                 color: Colors.white,
                                 //elevation: 0,
@@ -209,18 +221,32 @@ class _RegisterChildrenState extends State<RegisterChildren>
                                 ),
                               ),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Nombre de la madre o responsable'),
+                              SizedBox(height: 5.0),
                               _nameMother(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Nombre del padre'),
+                              SizedBox(height: 5.0),
                               _nameFather(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Número de casa'),
+                              SizedBox(height: 5.0),
                               _numberHouse(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Número de teléfono'),
+                              SizedBox(height: 5.0),
                               _numberPhone(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Número de sector'),
+                              SizedBox(height: 5.0),
                               _numberSector(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Dirección del niño(a)'),
+                              SizedBox(height: 5.0),
                               _address(),
                               SizedBox(height: 15.0),
+                              _textoTitulo('Comunidad'),
+                              SizedBox(height: 5.0),
                               Material(
                                 color: Colors.white,
                                 //elevation: 0,
@@ -278,7 +304,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
       controller: _nameController,
       autoValidate: _autovalidate,
       validator: validateName,
-      inputText: "Nombre del niñ@",
+      inputText: "Nombre del niño(a)",
       onSaved: (value) {},
     );
   }
@@ -288,7 +314,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
       controller: _secondController,
       autoValidate: _autovalidate,
       validator: validateApe,
-      inputText: "Apellido del niñ@",
+      inputText: "Apellido del niño(a)",
       onSaved: (value) {},
     );
   }
@@ -437,6 +463,10 @@ class _RegisterChildrenState extends State<RegisterChildren>
         }
       },
     );
+  }
+
+  Widget _textoTitulo(String titulo) {
+    return Text(titulo,style: TextStyle(color: Colors.white),);
   }
 
   //un widget para mostrar el error de firebase

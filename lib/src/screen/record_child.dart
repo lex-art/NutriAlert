@@ -121,7 +121,7 @@ class ChildItem extends StatelessWidget {
       padding: EdgeInsets.only(left: 10, right: 8),
       child: Column(
         children: [
-          //----------- primero vemos si no unas el filtro de busqueda------------
+          //----------- primero vemos si no usa el filtro de busqueda------------
           filter == null || filter == ""
               ? ListTile(
                   leading: CircleAvatar(
@@ -157,10 +157,10 @@ class ChildItem extends StatelessWidget {
                   //cuando le da click lo lleva a otra pag
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute<Null>(
-                        builder: (BuildContext context) => StoryChild(id)));
+                        builder: (BuildContext context) => StoryChild(id: id, pantallaTest: false,)));
                   },
                 )
-//---------------------- buscamos en base al nombre lo que el textField de busqueda nos pasa  ----------------
+//---------------------- buscamos en base al nombre  o el apellido lo que el textField de busqueda nos pasa  ----------------
               : nombres.toLowerCase().contains(filter.toLowerCase()) || apellidos.toLowerCase().contains(filter.toLowerCase())
                   ? ListTile(
                       leading: CircleAvatar(
@@ -198,7 +198,7 @@ class ChildItem extends StatelessWidget {
                       //cuando le da click lo lleva a otra pag
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute<Null>(
-                            builder: (BuildContext context) => StoryChild(id)));
+                            builder: (BuildContext context) => StoryChild(id: id, pantallaTest: false,)));
                       },
                     )
                   : Container(),

@@ -23,7 +23,7 @@ class AppFlatButton extends StatelessWidget {
           //tamaño del boton
           child: SizedBox(
             height: 35.0,
-            width: 125,
+            width: 140,
             child: FlatButton.icon(
               color: color,
               icon: icon,
