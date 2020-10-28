@@ -18,31 +18,34 @@ class _RecordChildState extends State<RecordChild> {
   @override
   void initState() {
     super.initState();
-     _searchController.addListener(() {
+    _searchController.addListener(() {
       setState(() {
         filter = _searchController.text;
       });
     });
-    
   }
+
 //---------------- para limpiar lo que tiene en memoria el text fielf -----------------
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
+
 //-------- funcion para iniciar la busqueda en el appBarr setteando la varible _isSearching -----
   void startSearching() {
     setState(() {
       _isSearching = true;
     });
   }
+
   //-------- funcion para parar la busqueda en el appBarr setteando la varible _isSearching -----
   void onSearchCancel() {
     setState(() {
       _isSearching = false;
     });
   }
+
 //-------- funcion para buscar dentro de la listTile segun lo que capture el text fiel  -------
   void onSearch() {
     _searchController.addListener(() {
@@ -117,6 +120,7 @@ class ChildItem extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+    String nombreCompleto = nombres + " " +apellidos;
     return Padding(
       padding: EdgeInsets.only(left: 10, right: 8),
       child: Column(
@@ -132,7 +136,7 @@ class ChildItem extends StatelessWidget {
                     // mainAxisAlignment: MainAxisAlignment.start, //espacio entre los dos elementos del row
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(nombres + " " + apellidos,
+                      Text(nombreCompleto,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16.0)),
                       Text(
@@ -157,11 +161,14 @@ class ChildItem extends StatelessWidget {
                   //cuando le da click lo lleva a otra pag
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute<Null>(
-                        builder: (BuildContext context) => StoryChild(id: id, pantallaTest: false,)));
+                        builder: (BuildContext context) => StoryChild(
+                              id: id,
+                              pantallaTest: false,
+                            )));
                   },
                 )
 //---------------------- buscamos en base al nombre  o el apellido lo que el textField de busqueda nos pasa  ----------------
-              : nombres.toLowerCase().contains(filter.toLowerCase()) || apellidos.toLowerCase().contains(filter.toLowerCase())
+              : nombreCompleto.toLowerCase().contains(filter.toLowerCase()) 
                   ? ListTile(
                       leading: CircleAvatar(
                         child: Text(nombres[0].toUpperCase()),
@@ -171,7 +178,7 @@ class ChildItem extends StatelessWidget {
                         // mainAxisAlignment: MainAxisAlignment.start, //espacio entre los dos elementos del row
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(nombres + " " + apellidos,
+                          Text(nombreCompleto,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 16.0)),
                           Text(
@@ -198,7 +205,10 @@ class ChildItem extends StatelessWidget {
                       //cuando le da click lo lleva a otra pag
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute<Null>(
-                            builder: (BuildContext context) => StoryChild(id: id, pantallaTest: false,)));
+                            builder: (BuildContext context) => StoryChild(
+                                  id: id,
+                                  pantallaTest: false,
+                                )));
                       },
                     )
                   : Container(),

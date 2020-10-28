@@ -13,8 +13,8 @@ import 'package:NutriAlert/src/screen/options_screens/listUser_screen.dart';
 
 Future<void> main() async {
   //nueva actualizacion de agosto necesitamos implementar esto para que funcione firebase
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+ WidgetsFlutterBinding.ensureInitialized();
+ await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(

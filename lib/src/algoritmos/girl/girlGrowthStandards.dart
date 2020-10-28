@@ -1,7 +1,7 @@
 class StandardGirl {
   //------------------- Longitud para la edad desde nacimiento a 2 años---------------------
   List lengthForAgeGIRLSBirthTo2Years(int month) {
-    var longitudParaEdad = [];
+    var longitudParaEdad =  [0.0,0.0,0.0];
     //posicion 0 = Mediana  y posicion 1 =  desviacion estandar 
     switch (month) {      
     case  0: return longitudParaEdad = List.of({49.1477,	1.8627}); break;
@@ -34,7 +34,7 @@ class StandardGirl {
   }
   //--------------- estatura/Talla para la edad de 2 a 5 años --------------------------------
  List heightForAgeGIRLS2To5Years (int month){
-   var estaturaParaEdad = [];
+   var estaturaParaEdad =  [0.0,0.0,0.0];
    //posicion 0 = Mediana  y posicion 1 =  desviacion estandar 
    switch (month) {
     case 24: return estaturaParaEdad = List.of({ 85.7153,	3.2267}); break;	
@@ -79,7 +79,7 @@ class StandardGirl {
  }
 //------------------ Peso para la Edad en niñas de 0 a 5 años-------------------
 List weightForAgeGIRLSbirthTo5Years(int month){
-  var pesoParaEdad = [];
+  var pesoParaEdad =  [0.0,0.0,0.0];
   //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
   switch (month) {
     case  0: return pesoParaEdad = List.of({ 0.3809,	 3.2322,	0.14171}); break;	
@@ -148,7 +148,7 @@ List weightForAgeGIRLSbirthTo5Years(int month){
 } 
 //----------------- Peso para la longitud de 0 a 2 años Puntuacion z -------------------------
 List weightForLengthGIRLSbirthTo2Years (int longitud){
-	var pesoParaLongitud = [];
+	var pesoParaLongitud =  [0.0,0.0,0.0];
   //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
   switch (longitud) {
   case 45: return pesoParaLongitud = List.of({-0.3833,	 2.4607,	0.09029}); break;
@@ -222,7 +222,7 @@ List weightForLengthGIRLSbirthTo2Years (int longitud){
 }
 //-------------------- Peso para la altura / Talla  de 2 a5 años ----------------------
 List weightForHeightGIRLS2To5Years (int altura){
-  var pesoParaAltura = [];
+  var pesoParaAltura =  [0.0,0.0,0.0];
   //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
   switch (altura) {
     case  65: return pesoParaAltura = List.of({	-0.3833,	 7.2402,	0.09113}); break;	

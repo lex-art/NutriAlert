@@ -7,7 +7,6 @@ import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/screen/second_screen/result_test_release.dart';
 import 'package:NutriAlert/src/widgets/app_error_message.dart';
 import 'package:flutter/material.dart';
-import 'package:date_format/date_format.dart';
 import 'package:NutriAlert/src/widgets/app_button.dart';
 import 'package:NutriAlert/src/widgets/app_flatButton.dart';
 import 'package:NutriAlert/src/widgets/app_textField.dart';
@@ -21,12 +20,6 @@ class TestNutritionalRelease extends StatefulWidget {
   _TestNutritionalStateRelease createState() => _TestNutritionalStateRelease();
 }
 
-class _Message {
-  int whom;
-  String text;
-
-  _Message(this.whom, this.text);
-}
 
 class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
     with ValidationChildMixins {
@@ -89,18 +82,16 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
   //variable para el switch encendido del bluetooth
 
   String _messageBuffer = '';
-  List<_Message> messages = List<_Message>();
   bool state = false;
   @override
   void initState() {
     super.initState();
 
-    _nombreController = TextEditingController();
-    _edadController = TextEditingController();
-    _pesoController = TextEditingController();
-    _alturaController = TextEditingController();
-    _fechaController =
-        TextEditingController(text: formatDate(now, [d, '-', M, '-', yyyy]));
+  _nombreController = TextEditingController();
+  _edadController = TextEditingController();
+  _pesoController = TextEditingController();
+  _alturaController = TextEditingController();
+
 //--------------------------- codigo Bluetooth ----------------------------------
     //Obtener el estado actual
     FlutterBluetoothSerial.instance.state.then((state) {
@@ -128,7 +119,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
         getPairedDevices();
       });
     });
-    //--------------------------- -----------------------------------------------------
+    //--------------------------------------------------------------------------------
   }
 
   @override
@@ -535,7 +526,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
     return AppTextField(
       controller: _alturaController,
       autoValidate: _autovalidate,
-      validator: validateTest,
+      validator: validarAltura,
       inputText: "Longitud/Talla(cm)",
       textInputType: TextInputType.number,
     );
@@ -684,7 +675,7 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
     Uint8List buffer = Uint8List(data.length - backspacesCounter);
     int bufferIndex = buffer.length;
 
-    // Apply backspace control character
+    // Aplicar control de retroceso
     backspacesCounter = 0;
     for (int i = data.length - 1; i >= 0; i--) {
       if (data[i] == 8 || data[i] == 127) {
@@ -718,9 +709,11 @@ class _TestNutritionalStateRelease extends State<TestNutritionalRelease>
                 : _messageBuffer + dataString.substring(0, index),
           ),
         );*/
+        print(_datoRecividoBlue);
         _messageBuffer = dataString.substring(index);
         if (_datoRecividoBlue.contains('k')) {
-          actualizarPeso(_datoRecividoBlue.replaceFirst("\n", "").replaceAll("k", ""));
+          actualizarPeso(
+              _datoRecividoBlue.replaceFirst("\n", "").replaceAll("k", ""));
         } else {
           actualizarAltura(_datoRecividoBlue.replaceFirst("\n", ""));
         }

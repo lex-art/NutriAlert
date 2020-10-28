@@ -5,12 +5,13 @@ class AppButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String nombre;
   final MaterialAccentColor color;
+  final Key key;
   //constructor
   AppButton({
     this.onPressed,
     this.nombre,
     this.color,
- 
+    this.key
   });
   @override
   Widget build(BuildContext context) {
@@ -19,15 +20,15 @@ class AppButton extends StatelessWidget {
       child: Material(
           color: color,
           borderRadius: BorderRadius.circular(50.0),
-          
+
           //sombra
           //elevation: 8.0,
           //tamaño del boton
           child: SizedBox(
-            
             height: 35.0,
             width: 150,
             child: FlatButton(
+              key: key,
               onPressed: onPressed,
               child: Text(
                 nombre,

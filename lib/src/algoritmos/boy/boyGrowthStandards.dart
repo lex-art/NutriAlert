@@ -3,7 +3,7 @@ class StandardsBoy {
  List lengthForAgeBirthTo2YearsMedianDS(int month) {
    ///Las Collections son objetos que agrupan múltiples elementos dentro de ellos, un objeto
    /// List por ejemplo pertenece a los Collections.
-   var alturaEdad = [];
+   var alturaEdad = [0.0,0.0,0.0];
    // posicion 0  = mediana  y posiscion 1 = Desviacion Estandar(DS)
    switch (month) {
     case  0: return alturaEdad = List.of({49.8842, 1.8931}); break;	
@@ -31,12 +31,13 @@ class StandardsBoy {
     case 22: return alturaEdad = List.of({86.0477, 2.9342}); break;	
     case 23: return alturaEdad = List.of({86.9410, 2.9951}); break;	
     case 24: return alturaEdad = List.of({87.8161, 3.0551}); break;	
-    default: return alturaEdad;
+    default: return alturaEdad;	
    }
+   
   }  
 ///--------------- mediana de longitud para la edad de 2 años a 5 años -------------------
   List lengthForAge2To5YearsMedianDS(int month) {
-    var alturaEdad = [];
+    var alturaEdad = [0.0,0.0,0.0];
     // posicion 0  = mediana  y posiscion 1 = Desviacion Estandar(DS)
     switch (month) {
       case 24: return	alturaEdad = List.of({ 87.1161, 3.0551}); break;
@@ -76,13 +77,13 @@ class StandardsBoy {
       case 58: return alturaEdad = List.of({108.8689, 4.5616}); break;
       case 59: return	alturaEdad = List.of({109.4170, 4.5977}); break;
       case 60: return	alturaEdad = List.of({109.9638, 4.6339}); break;
-      default: return alturaEdad;
+      default: return alturaEdad ;
      }	
    }
 
 //----------------------------- Peso para la edad ---------------------------------
  List weigthForAgeBoy(int month){
-   var weigthForAge = [];
+   var weigthForAge = [0.0,0.0,0.0];
    //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
    switch (month) {
     case  0: return weigthForAge = List.of({0.3487,  3.3464, 0.14602}); break;	   
@@ -151,7 +152,7 @@ class StandardsBoy {
  }
 //--------------------- Peso para la longitud de nacimiento a dos años (Puntuacion Z) -----------
 List weightForLengthBirthTo2YearsBOYSz(int altura){
-  var   weightForLength = [];
+  var   weightForLength = [0.0,0.0,0.0];
   //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
   switch (altura) {
     case  45:	return weightForLength = List.of({-0.3521,   2.441, 0.09182}); break;
@@ -220,12 +221,12 @@ List weightForLengthBirthTo2YearsBOYSz(int altura){
     case 108:	return weightForLength = List.of({-0.3521, 17.5885,	0.08629}); break;	
     case 109:	return weightForLength = List.of({-0.3521, 17.9242,	0.08691}); break;	
     case 110:	return weightForLength = List.of({-0.3521, 18.2689,	0.08755}); break;	
-    default: return weightForLength;   }
+    default: return weightForLength;  }
  }
 
 //--------------------- Peso para la estatura altura de dos a cinco años (Puntuacion Z) -----------
 List weightForHeight2To5YearsBOYSz(int altura){
-   var   weightForLength = [];
+   var   weightForLength = [0.0,0.0,0.0];
   //posicion 0 = Lambda , posicion 1 = Mediana, posicion 2 = Sigma
   switch (altura) {
     case  65: return weightForLength = List.of({-0.3521,  7.4327, 0.08217}); break;

@@ -3,8 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChildService {
   //una isntacia de firestore para guardar datos
-  // ignore: deprecated_member_use
-  final _fireStore = Firestore.instance;
+  final _fireStore = FirebaseFirestore.instance;
 //------------------------------- funcion para registrar un niño nuevo ------------------------------------
   Future<ChildRequest> saveChild(
       {String collectionName, Map<String, dynamic> collectionValues}) async {

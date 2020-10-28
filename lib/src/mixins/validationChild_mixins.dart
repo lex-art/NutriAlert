@@ -38,20 +38,24 @@ class ValidationChildMixins {
     if (value.length < 1) return "Ingrese un valor";
     return null;
   }
+String validarAltura(value) {
+    if (value.contains('.')) return "Ingrese un dato,  o quite el punto decimal";
+    return null;
+  }
 
   //------------------------------ Validaciones del resultado del test -------------------------
   String validateResult(String value) {
-    if (value.length < 1) {
+    if (value.length <= 0) {
       return "Ingrese un valor";
     }
-    if (value.contains('-')) {
-      var l = value.replaceAll("-", "0");
-      var val = int.parse(l);
-      if (val > 3) return "Valor incorrecto";
-    } else {
-      var val = int.parse(value);
-      if (val > 3) return "Valor incorrecto";
-    }
+   // if (value.contains('-')) {
+   //   var l = value.replaceAll("-", "0");
+   //   var val = int.parse(l);
+   //   if (val > 3) return "Valor incorrecto";
+   // } else {
+   //   var val = int.parse(value);
+   //   if (val > 3) return "Valor incorrecto";
+   // }
     return null;
   }
 }

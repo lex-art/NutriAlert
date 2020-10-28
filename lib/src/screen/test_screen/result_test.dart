@@ -5,6 +5,7 @@ import 'package:NutriAlert/src/algoritmos/proxima_cita.dart';
 import 'package:NutriAlert/src/mixins/validationChild_mixins.dart';
 import 'package:NutriAlert/src/screen/second_screen/storyChild_screen.dart';
 import 'package:NutriAlert/src/service/child_Service.dart';
+import 'package:NutriAlert/src/widgets/app_error_message.dart';
 import 'package:NutriAlert/src/widgets/app_iconAlert.dart';
 import 'package:NutriAlert/src/widgets/app_iconBoy.dart';
 import 'package:NutriAlert/src/widgets/app_iconGirl.dart';
@@ -30,6 +31,7 @@ class ResultTest extends StatefulWidget {
 
 class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   bool _autovalidate = false;
+  String _errorMessage = "";
 
   TextEditingController _pesoEdadController = TextEditingController();
   TextEditingController _longitudEdadController = TextEditingController();
@@ -40,6 +42,8 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   bool showSpinner = false;
   //un global key permite referenciar a un formulario y desde él tener accesos al estado de un textFormfield
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+    // Inicializando una clave global, ya que nos ayudaría a mostrar un SnackBar más tarde
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   //longitud/estatura para la edad
   String lengthHeightForAge = "";
   //peso para la edad
@@ -47,7 +51,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   //longitud/Estatura para el peso
   String zScore = "";
   int edad;
-  double altura;
+  int altura;
   double peso;
   int altura2;
 
@@ -56,43 +60,54 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
     super.initState();
     edad = int.parse(widget.edad);
     altura2 = int.parse(widget.altura);
-    altura = double.parse(widget.altura);
+    altura = int.parse(widget.altura);
     peso = double.parse(widget.peso);
 
-    //----------------------- verificamos que genero es para saber que tipo de evaluacion es el adecuado par ael niñ@ ---
+//----------------------- verificamos que genero es para saber que tipo de evaluacion es el adecuado par ael niñ@ ---
+
     if (widget.genero == "Masculino") {
       lengthHeightForAge =
-          TestNutritionalBoy().longitudEdadBirdTo2Year(edad, altura);
+          TestNutritionalBoy().longitudEdadBirdTo2Year(edad, altura).toStringAsFixed(2);
       weigthForAgeBirdTo5Year =
-          TestNutritionalBoy().pesoEdadBirdTo5Year(edad, peso);
+          TestNutritionalBoy().pesoEdadBirdTo5Year(edad, peso).toStringAsFixed(2);
       //puntuacion z esta detecta si es menor a 2 años hace un examen diferente y si es de 2 a5 años, tambien hace otro examen
-      zScore = TestNutritionalBoy().puntuacionZ(edad, altura2, peso);
+      zScore = TestNutritionalBoy().puntuacionZ(edad, altura2, peso).toStringAsFixed(2);
     }
     if (widget.genero == "Femenino") {
       lengthHeightForAge =
-          TestNutritionalGirl().longitTallaParaEdadGirl(edad, altura);
-      weigthForAgeBirdTo5Year = TestNutritionalGirl().pesoEdad(edad, peso);
-      zScore = TestNutritionalGirl().puntuacionZ(edad, altura2, peso);
+          TestNutritionalGirl().longitTallaParaEdadGirl(edad, altura).toStringAsFixed(2);
+      weigthForAgeBirdTo5Year = TestNutritionalGirl().pesoEdad(edad, peso).toStringAsFixed(2);
+      zScore = TestNutritionalGirl().puntuacionZ(edad, altura2, peso).toStringAsFixed(2);
     }
 
-    setState(() {
-      //----------------------------- Imprimimos los resultados en pantalla ---------------------------------
-      _pesoEdadController = TextEditingController(
-          text: "z = " +
-              weigthForAgeBirdTo5Year +
-              ", " +
-              Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
-      _longitudEdadController = TextEditingController(
-          text: "z = " +
-              lengthHeightForAge +
-              ", " +
-              Resultados().longitudTallaEdad(double.parse(lengthHeightForAge)));
-      _zScoreController = TextEditingController(
-          text: "z = " +
-              zScore +
-              ", " +
-              Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
-    });
+    if (zScore == "NaN" ||  weigthForAgeBirdTo5Year == "NaN"  || lengthHeightForAge == "Infinity") {
+      _pesoEdadController =
+          TextEditingController(text: "Error en los datos ingresados");
+      _longitudEdadController =
+          TextEditingController(text: "Error en los datos ingresados");
+      _zScoreController =
+          TextEditingController(text: "Error en los datos ingresados");
+    } else {
+      setState(() {
+        //----------------------------- Imprimimos los resultados en pantalla ---------------------------------
+        _pesoEdadController = TextEditingController(
+            text: "z = " +
+                weigthForAgeBirdTo5Year +
+                ", " +
+                Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
+        _longitudEdadController = TextEditingController(
+            text: "z = " +
+                lengthHeightForAge +
+                ", " +
+                Resultados()
+                    .longitudTallaEdad(double.parse(lengthHeightForAge)));
+        _zScoreController = TextEditingController(
+            text: "z = " +
+                zScore +
+                ", " +
+                Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
+      });
+    }
     _trataController = TextEditingController();
   }
 
@@ -108,6 +123,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   Widget build(BuildContext context) {
     int meses = int.parse(widget.edad);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
           //color al botron de retroceso
           leading: BackButton(color: Colors.white),
@@ -204,6 +220,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
                               fontWeight: FontWeight.normal),
                         ),
                         _submitResult(),
+                         _showErrorMessage(),
                         Text(
                           "Tratamiento",
                           style: TextStyle(
@@ -229,7 +246,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   Widget _pesoParaEdad() {
     return AppTextField(
       autoValidate: _autovalidate,
-      //validator: validateResult,
+      validator: validateResult,
       controller: _pesoEdadController,
       textInputType: TextInputType.number,
       inputText: "Peso para la edad",
@@ -239,7 +256,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   Widget _alturaParaEdad() {
     return AppTextField(
       autoValidate: _autovalidate,
-     // validator: validateResult,
+      validator: validateResult,
       controller: _longitudEdadController,
       textInputType: TextInputType.number,
       inputText: "Altura para la edad",
@@ -248,8 +265,8 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
 
   Widget _puntuacionZ() {
     return AppTextField(
-      controller: _zScoreController,
-      //validator: validateResult,
+      controller: _zScoreController,  
+      validator: validateResult,    
       textInputType: TextInputType.number,
       inputText: int.parse(widget.edad) < 24
           ? "Puntuación Z de 0 a 2 años"
@@ -260,7 +277,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   }
 
   Widget _tratamietno() {
-    return AppTextField(
+    return AppTextField(      
       autoValidate: _autovalidate,
       maxLines: true,
       inputText: "Tratamiento",
@@ -274,49 +291,56 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
       onPressed: () async {
         if (_formkey.currentState.validate()) {
           String id = widget.idChild;
+          if (zScore == "NaN") {
+            show('No se puede guardar los datos');
+          } else {
 //---------------------- Guardamos el historial del niño ---------------------------------
-          var saveStory = await ChildService().saveStorychild(
-              collectionName: "niños/$id/historial",
-              collectionValues: {
-                'edad': widget.edad,
-                'fecha': CalculateDate().fechaActual(),
-                'longitud': widget.altura,
-                'longTallaEdad': lengthHeightForAge,
-                'estadoLongTalla': Resultados()
-                    .longitudTallaEdad(double.parse(lengthHeightForAge)),
-                'peso': widget.peso,
-                'pesoEdad': weigthForAgeBirdTo5Year,
-                'estadoPeso': Resultados()
-                    .pesoEdad(double.parse(weigthForAgeBirdTo5Year)),
-                'proximaCita': CalculateDate().proximaCita(widget.edad),
-                'tratamiento': _trataController.text,
-                'z2ages': edad <= 24 ? zScore : "",
-                'z5ages': edad > 24 ? zScore : "",
-                'estadoZScore':
-                    Resultados().pesoLongitudTallaZScore(double.parse(zScore)),
-              });
-          
-//----------------- ahora tenemos que actualizar el registro del niño --------------------
-          if (saveStory.success) {
-            var update = await ChildService().updateRecordChild(
-                collectionName: "niños",
-                id: id,
+            var saveStory = await ChildService().saveStorychild(
+                collectionName: "niños/$id/historial",
                 collectionValues: {
-                  'edadMeses': widget.edad,
-                  'estado': Resultados()
+                  'edad': widget.edad,
+                  'fecha': CalculateDate().fechaActual(),
+                  'longitud': widget.altura,
+                  'longTallaEdad': lengthHeightForAge,
+                  'estadoLongTalla': Resultados()
+                      .longitudTallaEdad(double.parse(lengthHeightForAge)),
+                  'peso': widget.peso,
+                  'pesoEdad': weigthForAgeBirdTo5Year,
+                  'estadoPeso': Resultados()
+                      .pesoEdad(double.parse(weigthForAgeBirdTo5Year)),
+                  'proximaCita': CalculateDate().proximaCita(widget.edad),
+                  'tratamiento': _trataController.text,
+                  'z2ages': edad <= 24 ? zScore : "",
+                  'z5ages': edad > 24 ? zScore : "",
+                  'estadoZScore': Resultados()
                       .pesoLongitudTallaZScore(double.parse(zScore)),
-                  'proxCita': CalculateDate().proximaCita(widget.edad),
                 });
-            if (update.success) {
-              Navigator.of(context).push(MaterialPageRoute<Null>(
-                  builder: (BuildContext context) => StoryChild(id: id, pantallaTest: true,)));
-              //Navigator.pushNamed(context, '/nutriAlert');
+
+//----------------- ahora tenemos que actualizar el registro del niño --------------------
+            if (saveStory.success) {
+              var update = await ChildService().updateRecordChild(
+                  collectionName: "niños",
+                  id: id,
+                  collectionValues: {
+                    'edadMeses': widget.edad,
+                    'estado': Resultados()
+                        .pesoLongitudTallaZScore(double.parse(zScore)),
+                    'proxCita': CalculateDate().proximaCita(widget.edad),
+                  });
+              if (update.success) {
+                Navigator.of(context).push(MaterialPageRoute<Null>(
+                    builder: (BuildContext context) => StoryChild(
+                          id: id,
+                          pantallaTest: true,
+                        )));
+                //Navigator.pushNamed(context, '/nutriAlert');
+              }
             }
+            _pesoEdadController.text = "";
+            _longitudEdadController.text = "";
+            _zScoreController.text = "";
+            _trataController.text = "";
           }
-          _pesoEdadController.text = "";
-          _longitudEdadController.text = "";
-          _zScoreController.text = "";
-          _trataController.text = "";
         } else {
           setState(() => _autovalidate = true);
         }
@@ -328,5 +352,30 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
         //Navigator.pop(context);
       },
     );
+  }
+   // Método para mostrar un Snackbar,
+  // tomando el mensaje como texto
+  //Metodo para motrar snackBar inferiror con mejsaje de texto
+  Future show(
+    String mensaje, {
+    Duration duration: const Duration(seconds: 3),
+  }) async {
+    await new Future.delayed(new Duration(milliseconds: 100));
+    _scaffoldKey.currentState.showSnackBar(
+      new SnackBar(
+        content: new Text(
+          mensaje,
+        ),
+        duration: duration,
+      ),
+    );
+  }
+  //un widget para mostrar el error de firebase
+  Widget _showErrorMessage() {
+    if (_errorMessage.length > 0 && _errorMessage != null) {
+      return ErrorMessage(errorMessage: _errorMessage);
+    } else {
+      return Container(height: 0.0);
+    }
   }
 }

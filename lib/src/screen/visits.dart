@@ -118,6 +118,7 @@ class ChildItem extends StatelessWidget {
       this.genero});
   @override
   Widget build(BuildContext context) {
+    String nombreCompleto = nombres + " " +apellidos;
     return Padding(
       padding: EdgeInsets.only(left: 10, right: 8),
       child: Column(
@@ -133,7 +134,7 @@ class ChildItem extends StatelessWidget {
                     // mainAxisAlignment: MainAxisAlignment.start, //espacio entre los dos elementos del row
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(nombres + " " + apellidos,
+                      Text(nombreCompleto,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 16.0)),
                       Text(
@@ -167,8 +168,8 @@ class ChildItem extends StatelessWidget {
                             )));
                   },
                 )
-              : nombres.toLowerCase().contains(filter.toLowerCase()) || apellidos.toLowerCase().contains(filter.toLowerCase())
-                  ? ListTile(
+              : nombreCompleto.toLowerCase().contains(filter.toLowerCase()) ? 
+              ListTile(
                       leading: CircleAvatar(
                         child: Text(nombres[0].toUpperCase()),
                         backgroundColor: Theme.of(context).buttonColor,

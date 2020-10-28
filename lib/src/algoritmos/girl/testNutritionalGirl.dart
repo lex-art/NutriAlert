@@ -2,7 +2,7 @@ import 'dart:math';
 import 'girlGrowthStandards.dart';
 
 class TestNutritionalGirl{
-  String longitTallaParaEdadGirl(int edad, double longitudEstatura) {
+  double longitTallaParaEdadGirl(int edad, int longitudEstatura) {
     /*Puntaje Z o puntaje de desvío estándar es un criterio estadístico universal.
     Define la distancia a la que se encuentra un punto (un individuo) determinado,
     respecto del centro de la distribución normal en unidades estandarizadas llamadas Z. 
@@ -45,10 +45,10 @@ class TestNutritionalGirl{
     //Formula descrita anteriormente
     zScore = (longitudEstatura - median) / standardDeviation;
 
-    return zScore.toStringAsFixed(2);
+    return zScore;
   }
 
-  String pesoEdad(int edad, double peso) {
+  double pesoEdad(int edad, double peso) {
     /*Las puntuaciones z permiten la descripción precisa del tamaño fuera de los percentiles
     3 y 97 de una referencia de crecimiento. Para calcular los percentiles y las puntuaciones z ,
     los profesionales de la salud requieren los parámetros LMS (Lambda para el sesgo, Mu para la
@@ -74,10 +74,10 @@ class TestNutritionalGirl{
 
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
 
-    return zScore.toStringAsFixed(2);
+    return zScore;
   }
 
-  String puntuacionZ(int edad, int altura, double peso) {
+  double puntuacionZ(int edad, int altura, double peso) {
     double zScore;
     double lambda;
     double mediana;
@@ -100,6 +100,6 @@ class TestNutritionalGirl{
       sigma = standardGirl[2];
     }
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
-    return zScore.toStringAsFixed(2);
+    return zScore;
   }
 }

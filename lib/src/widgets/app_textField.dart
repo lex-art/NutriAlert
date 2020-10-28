@@ -21,6 +21,7 @@ class AppTextField extends StatelessWidget {
   //variable para desactivar el umero de lineas maximo
   final bool maxLines;
   //valores calor inicioal en el textField
+  final Key key;
 
   //para que cuando haya un error y despues se corrija este desaparezca el error
   final bool autoValidate;
@@ -36,11 +37,13 @@ class AppTextField extends StatelessWidget {
     this.validator,
     this.textInputType,
     this.maxLines,
+    this.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      key: key,
       //para la autovalidacion de los textfield
       autovalidate: autoValidate,
       validator: validator,

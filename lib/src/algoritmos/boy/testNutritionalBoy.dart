@@ -2,7 +2,7 @@ import 'dart:math';
 import 'boyGrowthStandards.dart';
 
 class TestNutritionalBoy {
-  String longitudEdadBirdTo2Year(int edad, double longitud) {
+  double longitudEdadBirdTo2Year(int edad, int longitud) {
     /*Puntaje Z o puntaje de desvío estándar es un criterio estadístico universal.
     Define la distancia a la que se encuentra un punto (un individuo) determinado,
     respecto del centro de la distribución normal en unidades estandarizadas llamadas Z. 
@@ -12,7 +12,7 @@ class TestNutritionalBoy {
 
     Por tanto, puede adquirir valores positivos o negativos. La fórmula de cálculo en distribuciones 
     estadísticas normales –gaussianas- (como la talla/edad) es la siguiente: 
-    Z = (valor observado) - (valor de la mediana de referencia para edad y sexo)/desvío estándar de la
+    Z = (valor observado) - (valor de la mediana de referencia para edad y sexo) / desvío estándar de la
     población de referencia    
      
     Cálculo de estatura
@@ -31,22 +31,28 @@ class TestNutritionalBoy {
     double standardDeviation;
     //* NOTA: es longitud y se usa otra tabla para niños menores a dos años y
     // Talla / Estatura para niños mayores a 3 años y se usa otra tabla
-    if (edad < 24) {
-      // posicion 0  = mediana  y posiscion 1 = Desviacion Estandar(DS)
-      var standardBoy = StandardsBoy().lengthForAgeBirthTo2YearsMedianDS(edad);
-      median = standardBoy[0];
-      standardDeviation = standardBoy[1];
-    } else {
-      var standardBoy = StandardsBoy().lengthForAge2To5YearsMedianDS(edad);
-      median = standardBoy[0];
-      standardDeviation = standardBoy[1];
+    try {
+      if (edad <= 24) {
+        // posicion 0  = mediana  y posiscion 1 = Desviacion Estandar(DS)
+        var standardBoy =
+            StandardsBoy().lengthForAgeBirthTo2YearsMedianDS(edad);
+        median = standardBoy[0];
+        standardDeviation = standardBoy[1];
+      } else {
+        var standardBoy = StandardsBoy().lengthForAge2To5YearsMedianDS(edad);
+        median = standardBoy[0];
+        standardDeviation = standardBoy[1];
+      }
+      //Formula descrita anteriormente
+      zScore = (longitud - median) / standardDeviation;
+      return zScore;
+    } on FormatException {
+      print("Datos invalidos");
+      return null;
     }
-    //Formula descrita anteriormente
-    zScore = (longitud - median) / standardDeviation;
-    return zScore.toStringAsFixed(2);
   }
 
-  String pesoEdadBirdTo5Year(int edad, double peso) {
+  double pesoEdadBirdTo5Year(int edad, double peso) {
     /*Las puntuaciones z permiten la descripción precisa del tamaño fuera de los percentiles
     3 y 97 de una referencia de crecimiento. Para calcular los percentiles y las puntuaciones z ,
     los profesionales de la salud requieren los parámetros LMS (Lambda para el sesgo, Mu para la
@@ -69,11 +75,10 @@ class TestNutritionalBoy {
     double sigma = standardBoy[2];
 
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
-
-    return zScore.toStringAsFixed(2);
+    return zScore;
   }
 
-  String puntuacionZ(int edad, int altura, double peso) {
+  double puntuacionZ(int edad, int altura, double peso) {
     double zScore;
     double lambda;
     double mediana;
@@ -82,7 +87,8 @@ class TestNutritionalBoy {
 
     ///NOTA: se calcula peso para la longitud a niños menores de 2 años (24 meses) y
     ///se calcula peso para la Estatura/Altura o talla a niños de 2 a 5 años
-    if (edad < 24) {
+
+    if (edad <= 24) {
       stadardoy = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura);
       lambda = stadardoy[0];
       mediana = stadardoy[1];
@@ -90,10 +96,10 @@ class TestNutritionalBoy {
     } else {
       stadardoy = StandardsBoy().weightForHeight2To5YearsBOYSz(altura);
       lambda = stadardoy[0];
-      mediana =stadardoy[1];
+      mediana = stadardoy[1];
       sigma = stadardoy[2];
     }
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
-    return zScore.toStringAsFixed(2);
+    return zScore;
   }
 }

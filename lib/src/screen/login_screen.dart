@@ -67,36 +67,41 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
         body: ModalProgressHUD(
             inAsyncCall: showSpinner,
             //---------------------Formulario de inicio de sesión -----------------
-            child: Form(
-              //llava que nos permitira saber el estado del formulario
-              key: _formkey,
-              child: Container(
-                  //padding: EdgeInsets.all(40.0),
-                  padding: EdgeInsets.symmetric(
-                      horizontal:
-                          40.0), //cuando el teclado se abre todo se acomode y no se pierda la pantalla
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      //crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        AppLogo(),
-                        SizedBox(height: 30.0), //espacio entre los widget
-                        _emailField(),
-                        SizedBox(height: 15.0),
-                        _passwordField(),
-                        SizedBox(height: 15.0),
-                        _showErrorMessage(),
-                        _submitField(),
-                      ],
-                    ),
-                  )),
+            child: SingleChildScrollView(
+              child: Form(
+                //llava que nos permitira saber el estado del formulario
+                key: _formkey,
+                child: Container(
+                    padding: EdgeInsets.only(top: 140, right: 40, left: 40),
+                    //padding: EdgeInsets.symmetric(
+                    //    horizontal:
+                    //        40.0), //cuando el teclado se abre todo se acomode y no se pierda la pantalla
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        //crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          AppLogo(),
+                          SizedBox(height: 5.0), //espacio entre los widget
+                          _textoTitulo('Ingrese usuario'),
+                          _emailField(),
+                          SizedBox(height: 10.0),
+                          _textoTitulo('Ingrese contraseña'),
+                          _passwordField(),
+                          SizedBox(height: 10.0),
+                          _showErrorMessage(),
+                          _submitField(),
+                        ],
+                      ),
+                    )),
+              ),
             )));
   }
 
   //metodos para los inputs y botones
   Widget _emailField() {
     return AppTextField(
+      key: ValueKey('correo'),
       focusNode: _focusNode,
       controller: _emailController,
       validator: validateEmail,
@@ -109,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
 
   Widget _passwordField() {
     return AppTextField(
+      key: ValueKey('pass'),
       controller: _passwordController,
       validator: validatePassword,
       autoValidate: _autoValidate,
@@ -118,8 +124,19 @@ class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
     );
   }
 
+  Widget _textoTitulo(String titulo) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        titulo,
+        style: TextStyle(color: Colors.white),
+      ),
+    );
+  }
+
   Widget _submitField() {
     return AppButton(
+      key: ValueKey("boton"),
       color: Colors.blueAccent,
       nombre: "Iniciar sesión",
       onPressed: () async {

@@ -41,12 +41,18 @@ dependencies:
   modal_progress_hud: ^0.1.3
   date_format: ^1.0.9
 
-
 dev_dependencies:
+  flutter_driver:
+    sdk: flutter
   flutter_test:
-    sdk: flutter  
+    sdk: flutter
+  test:
+  
+    
 #para poder cambiar el launcher de la app    
   flutter_launcher_icons: ^0.8.0  
+#--------------------- dependencias para realiazar la pruebas -------------------------
+
 
 flutter_icons:
   android: true

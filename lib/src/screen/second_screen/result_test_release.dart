@@ -43,60 +43,75 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
   //peso para la edad
   String weigthForAgeBirdTo5Year = "";
   //longitud/Estatura para el peso
+  // Inicializando una clave global, ya que nos ayudaría a mostrar un SnackBar más tarde
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String zScore = "";
   int edad;
-  double altura;
+  int altura;
   double peso;
   int altura2;
 
   @override
   void initState() {
     super.initState();
+
     edad = int.parse(widget.edad);
     altura2 = int.parse(widget.altura);
-    altura = double.parse(widget.altura);
+    altura = int.parse(widget.altura);
     peso = double.parse(widget.peso);
 
 //----------------------- verificamos que genero es para saber que tipo de evaluacion es el adecuado par ael niñ@ ---
+
     if (widget.genero == "Masculino") {
-      lengthHeightForAge =
-          TestNutritionalBoy().longitudEdadBirdTo2Year(edad, altura);
+      lengthHeightForAge = 
+          TestNutritionalBoy().longitudEdadBirdTo2Year(edad, altura).toStringAsFixed(2);
       weigthForAgeBirdTo5Year =
-          TestNutritionalBoy().pesoEdadBirdTo5Year(edad, peso);
+          TestNutritionalBoy().pesoEdadBirdTo5Year(edad, peso).toStringAsFixed(2);
       //puntuacion z esta detecta si es menor a 2 años hace un examen diferente y si es de 2 a5 años, tambien hace otro examen
-      zScore = TestNutritionalBoy().puntuacionZ(edad, altura2, peso);
+      zScore = TestNutritionalBoy().puntuacionZ(edad, altura2, peso).toStringAsFixed(2);
     }
     if (widget.genero == "Femenino") {
       lengthHeightForAge =
-          TestNutritionalGirl().longitTallaParaEdadGirl(edad, altura);
-      weigthForAgeBirdTo5Year = TestNutritionalGirl().pesoEdad(edad, peso);
-      zScore = TestNutritionalGirl().puntuacionZ(edad, altura2, peso);
+          TestNutritionalGirl().longitTallaParaEdadGirl(edad, altura).toStringAsFixed(2);
+      weigthForAgeBirdTo5Year = TestNutritionalGirl().pesoEdad(edad, peso).toStringAsFixed(2);
+      zScore = TestNutritionalGirl().puntuacionZ(edad, altura2, peso).toStringAsFixed(2);
     }
-
-    setState(() {
-      //----------------------------- Imprimimos los resultados en pantalla ---------------------------------
-      _pesoEdadController = TextEditingController(
-          text: "z = " +
-              weigthForAgeBirdTo5Year +
-              ", " +
-              Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
-      _longitudEdadController = TextEditingController(
-          text: "z = " +
-              lengthHeightForAge +
-              ", " +
-              Resultados().longitudTallaEdad(double.parse(lengthHeightForAge)));
-      _zScoreController = TextEditingController(
-          text: "z = " +
-              zScore +
-              ", " +
-              Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
-    });
+    //verfificamos  que la evaluación no tenga un error inesperado
+    if (zScore == "NaN" ||  weigthForAgeBirdTo5Year == "NaN"  || lengthHeightForAge == "Infinity") {
+      _pesoEdadController =
+          TextEditingController(text: "Error en los datos ingresados");
+      _longitudEdadController =
+          TextEditingController(text: "Error en los datos ingresados");
+      _zScoreController =
+          TextEditingController(text: "Error en los datos ingresados");
+    } else {
+      setState(() {
+        //----------------------------- Imprimimos los resultados en pantalla ---------------------------------
+        _pesoEdadController = TextEditingController(
+            text: "z = " +
+                weigthForAgeBirdTo5Year +
+                ", " +
+                Resultados().pesoEdad(double.parse(weigthForAgeBirdTo5Year)));
+        _longitudEdadController = TextEditingController(
+            text: "z = " +
+                lengthHeightForAge +
+                ", " +
+                Resultados()
+                    .longitudTallaEdad(double.parse(lengthHeightForAge)));
+        _zScoreController = TextEditingController(
+            text: "z = " +
+                zScore +
+                ", " +
+                Resultados().pesoLongitudTallaZScore(double.parse(zScore)));
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     int meses = int.parse(widget.edad);
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
           //color al botron de retroceso
           leading: BackButton(color: Colors.white),
@@ -189,8 +204,6 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
                               color: Theme.of(context).primaryColor,
                               fontSize: 24),
                         ),
-
-                        
                         SizedBox(height: 5.0),
                         Text(
                           "Basado en Estándares de crecimiento de la OMS 2006 ",
@@ -265,6 +278,24 @@ class _ResultTestStateRelease extends State<ResultTestRelease>
         //_zde3a5Controller.dispose();
         //Navigator.pop(context);
       },
+    );
+  }
+
+  // Método para mostrar un Snackbar,
+  // tomando el mensaje como texto
+  //Metodo para motrar snackBar inferiror con mejsaje de texto
+  Future show(
+    String mensaje, {
+    Duration duration: const Duration(seconds: 3),
+  }) async {
+    await new Future.delayed(new Duration(milliseconds: 100));
+    _scaffoldKey.currentState.showSnackBar(
+      new SnackBar(
+        content: new Text(
+          mensaje,
+        ),
+        duration: duration,
+      ),
     );
   }
 }
