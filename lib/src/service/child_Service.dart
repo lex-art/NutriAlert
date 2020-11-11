@@ -25,14 +25,14 @@ class ChildService {
     return _fireStore
         .collection("niños")
         .orderBy(
-          "fechaRegistro", /*descending: true*/
+          "fechaRegistro", descending: true
         )
         .snapshots();
   }
   
 //-------------- suscripcion(con snapshot) a firestore para obtener los registros de los niños para ver los registros---------
   Stream<QuerySnapshot> getChildStreamRegistros() {
-    return _fireStore.collection("niños").orderBy("nombres").snapshots();
+    return _fireStore.collection("niños").orderBy("fechaRegistro", descending: true).snapshots();
   }
 //---------------------------- metodo para obtener el historial del niño -----------------------------------
   // Future<QuerySnapshot> getStory(String id) async {

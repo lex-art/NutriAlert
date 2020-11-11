@@ -291,8 +291,7 @@ class _RegisterChildrenState extends State<RegisterChildren>
     return AppTextField(
       focusNode: _focusNode,
       controller: _cuiController,
-      autoValidate: _autovalidate,
-      validator: validateCui,
+      autoValidate: _autovalidate,     
       inputText: "Ingrese CUI",
       textInputType: TextInputType.number, //tipo de teclado
       onSaved: (value) {},

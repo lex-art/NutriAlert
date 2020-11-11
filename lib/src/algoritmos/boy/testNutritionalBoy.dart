@@ -31,7 +31,6 @@ class TestNutritionalBoy {
     double standardDeviation;
     //* NOTA: es longitud y se usa otra tabla para niños menores a dos años y
     // Talla / Estatura para niños mayores a 3 años y se usa otra tabla
-    try {
       if (edad <= 24) {
         // posicion 0  = mediana  y posiscion 1 = Desviacion Estandar(DS)
         var standardBoy =
@@ -45,11 +44,7 @@ class TestNutritionalBoy {
       }
       //Formula descrita anteriormente
       zScore = (longitud - median) / standardDeviation;
-      return zScore;
-    } on FormatException {
-      print("Datos invalidos");
-      return null;
-    }
+      return zScore;    
   }
 
   double pesoEdadBirdTo5Year(int edad, double peso) {
@@ -83,21 +78,21 @@ class TestNutritionalBoy {
     double lambda;
     double mediana;
     double sigma;
-    var stadardoy;
+    var stadardBoy;
 
     ///NOTA: se calcula peso para la longitud a niños menores de 2 años (24 meses) y
     ///se calcula peso para la Estatura/Altura o talla a niños de 2 a 5 años
 
     if (edad <= 24) {
-      stadardoy = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura);
-      lambda = stadardoy[0];
-      mediana = stadardoy[1];
-      sigma = stadardoy[2];
+      stadardBoy = StandardsBoy().weightForLengthBirthTo2YearsBOYSz(altura);
+      lambda = stadardBoy[0];
+      mediana = stadardBoy[1];
+      sigma = stadardBoy[2];
     } else {
-      stadardoy = StandardsBoy().weightForHeight2To5YearsBOYSz(altura);
-      lambda = stadardoy[0];
-      mediana = stadardoy[1];
-      sigma = stadardoy[2];
+      stadardBoy = StandardsBoy().weightForHeight2To5YearsBOYSz(altura);
+      lambda = stadardBoy[0];
+      mediana = stadardBoy[1];
+      sigma = stadardBoy[2];
     }
     zScore = (pow((peso / mediana), lambda) - 1) / (lambda * sigma);
     return zScore;

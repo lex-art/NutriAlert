@@ -18,7 +18,7 @@ Future<void> main() async {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
-      //--------------------colores en general que usara la app----------------
+      //-------------------colores en general que usara la app----------------
       textTheme: TextTheme(
         body1: TextStyle(color: Colors.black54, fontWeight: FontWeight.normal),
         title: TextStyle(color: Colors.white),

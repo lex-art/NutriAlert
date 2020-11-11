@@ -485,8 +485,8 @@ class _TestNutritionalState extends State<TestNutritional>
       nombre: "Evaluar",
       color: Colors.blueAccent,
       onPressed: () {
-        if (int.parse(_edadController.text) <= int.parse(widget.edad)) {
-          _errorMessage = "La edad no puede ser menor o igual a la actual";
+        if (int.parse(_edadController.text) < int.parse(widget.edad)) {
+          _errorMessage = "La edad no puede ser menor a la actual";
           setState(() {
             _showErrorMessage();
           });

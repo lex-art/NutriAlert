@@ -17,13 +17,13 @@ class Resultados {
 
   String longitudTallaEdad(double longEdad) {
     if (longEdad <= 2 && longEdad >= -2) {
-      return 'Longitud/talla Normal';
+      return 'Long/talla Normal';
     }
     if (longEdad <= -2 && longEdad >= -3) {
       return 'Retardo del Crecimiento';
     }
     if (longEdad < -3) {
-      return 'Retardo del Crecimiento Severo';
+      return 'Retardo del crecimiento Severo';
     }
     if (longEdad > 2) {
       return 'Caso extremo';

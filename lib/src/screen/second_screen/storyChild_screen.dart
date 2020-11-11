@@ -293,7 +293,7 @@ class _StoryChildState extends State<StoryChild> {
                                           color:
                                               Theme.of(context).accentColor))),
                               DataColumn(
-                                  label: Text("Talla/Long.\nEdad",
+                                  label: Text("Long.\nTalla\nEdad",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -330,7 +330,7 @@ class _StoryChildState extends State<StoryChild> {
                                           color:
                                               Theme.of(context).accentColor))),
                               DataColumn(
-                                  label: Text("Prox. Cita",
+                                  label: Text("Prox.\nCita",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color:
@@ -410,7 +410,7 @@ class _StoryChildState extends State<StoryChild> {
         ),)),
       DataCell(Text(longTallaEdad)),
       DataCell(Text(estadoLongTalla, style: TextStyle(
-          color: estadoLongTalla == "Longitud/talla Normal" ? Colors.green : Colors.red,
+          color: estadoLongTalla == "Long/talla Normal" ? Colors.green : Colors.red,
           fontWeight: FontWeight.bold,
         ),),),
 

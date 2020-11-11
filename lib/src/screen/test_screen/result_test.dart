@@ -279,6 +279,7 @@ class _ResultTestState extends State<ResultTest> with ValidationChildMixins {
   Widget _tratamietno() {
     return AppTextField(      
       autoValidate: _autovalidate,
+      controller: _trataController,
       maxLines: true,
       inputText: "Tratamiento",
     );
