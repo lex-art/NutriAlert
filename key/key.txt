@@ -1,1 +1,0 @@
-"keytool -importkeystore -srckeystore c:UsersUSER_NAMEkey.jks -destkeystore c:UsersUSER_NAMEkey.jks -deststoretype pkcs12".
